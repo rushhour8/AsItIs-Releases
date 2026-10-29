@@ -5,7 +5,7 @@
   "latestVersionName": "0.5.0",
   "minimumSupportedVersionCode": 1,
   "mandatory": false,
-  "isForceUpdate": false,
+  "isForceUpdate": true,
   "releaseUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/latest",
   "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/latest/download/AsItIs.apk",
   "apkSha256": "",
