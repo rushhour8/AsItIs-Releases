@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packageName": "cc.asitis.app",
-  "latestVersionCode": 4,
+  "latestVersionCode": 5,
   "latestVersionName": "0.4.0",
   "minimumSupportedVersionCode": 1,
   "mandatory": false,
