@@ -2,8 +2,9 @@
 
 Fails when the file is not what the app accepts: not JSON, another app's package, a version code
 that is not a positive whole number, a link that is not https, a checksum that is not a SHA-256.
-Once this repository has a release, the APK link must download, and when the file gives a size
-or a SHA-256, the download must match them (the app refuses a download that does not).
+Once this repository has a release, the APK link must download. When the file gives a size or a
+SHA-256 that the download does not match, it warns: the app no longer checks them (it hands the
+download to Android's installer), so a wrong file would reach readers' installers.
 
 Run from the repository's root: python3 .github/scripts/check_update_json.py
 """
@@ -51,9 +52,15 @@ if not isinstance(minimum, int) or isinstance(minimum, bool) or minimum < 0:
     fail("minimumSupportedVersionCode must be a whole number (0 or more)")
 elif isinstance(code, int) and minimum > code:
     fail("minimumSupportedVersionCode cannot be above latestVersionCode")
-for flag in ("mandatory", "isForceUpdate"):
-    if flag in m and not isinstance(m[flag], bool):
-        fail(f"{flag} must be true or false")
+if "forceUpdate" in m and not isinstance(m["forceUpdate"], bool):
+    fail("forceUpdate must be true or false")
+# the two switches of earlier files: one now, forceUpdate
+if "isForceUpdate" in m:
+    if not isinstance(m["isForceUpdate"], bool):
+        fail("isForceUpdate must be true or false")
+    warnings.append("isForceUpdate is forceUpdate's old name (the app still reads it): write forceUpdate instead")
+if "mandatory" in m:
+    warnings.append("mandatory is no longer read by the app: use forceUpdate for an update that must be installed")
 if not https(m.get("apkUrl")):
     fail("apkUrl must be an https link to the APK")
 if m.get("releaseUrl") not in (None, "") and not https(m.get("releaseUrl")):
@@ -96,9 +103,9 @@ if not errors and repo:
                     digest.update(chunk)
                     got += len(chunk)
             if size and got != size:
-                fail(f"apkSizeBytes is {size}, but the APK at apkUrl is {got} bytes")
+                warnings.append(f"apkSizeBytes is {size}, but the APK at apkUrl is {got} bytes")
             if sha and digest.hexdigest() != sha.lower():
-                fail(f"apkSha256 does not match the APK at apkUrl (its SHA-256 is {digest.hexdigest()})")
+                warnings.append(f"apkSha256 does not match the APK at apkUrl (its SHA-256 is {digest.hexdigest()})")
             print(f"APK at apkUrl: {got} bytes, SHA-256 {digest.hexdigest()}")
         except Exception as e:  # noqa: BLE001 - any failure to download is reported as such
             fail(f"the APK at apkUrl could not be downloaded ({e}); the app would show 'not found'")

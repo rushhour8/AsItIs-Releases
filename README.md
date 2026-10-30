@@ -2,23 +2,24 @@
 
 This public repository holds what the As It Is app needs to update itself. The app's source stays private in `rushhour8/AsItIs`.
 
-- **`update.json`**: the published version. The app reads it live each time it starts, from
-  `https://raw.githubusercontent.com/rushhour8/AsItIs-Releases/main/update.json`.
+- **`update.json`**: the published version. The app reads it live each time it starts. It asks GitHub's API for the file as it is now (`https://api.github.com/repos/rushhour8/AsItIs-Releases/contents/update.json?ref=main`), and reads `https://raw.githubusercontent.com/rushhour8/AsItIs-Releases/main/update.json` when the API cannot answer.
+- **This repository must be public.** A private repository answers the app (which signs in to nothing) with "not found", for `update.json` and for the APKs alike.
 - **Releases**: each version's APK, attached to a release as **`AsItIs.apk`**.
 
 ## How the app uses it
 
-1. **When it checks:** at each start, when the phone is online, the app reads `update.json`. It asks for a fresh copy every time (`?t=…`, no cache). *Check for update* in the side panel reads it too.
+1. **When it checks:** at each start, when the phone is online, the app reads `update.json`. Opened offline, it reads it as soon as the phone comes online while the app is in use. Once it has had an answer, it does not check again by itself until the next start. *Check for update* in the side panel reads it whenever asked.
+   - **An edit is seen at once:** the app asks GitHub's API, which has no CDN copy, with a fresh `?t=…` each time and `Cache-Control: no-cache, no-store, must-revalidate` and `Pragma: no-cache`. (The raw address alone took 10–15 minutes: its CDN keeps a copy.) The API answers 60 requests an hour from each internet address; past that, the raw address is read.
 2. **What it compares:** `latestVersionCode` with the installed app's `versionCode`. If it is higher, the update popup opens with `latestVersionName` and `releaseNotes`.
 3. **Download update:** the app downloads `apkUrl` itself, without the browser, showing progress.
-   - When `apkSizeBytes` and `apkSha256` are given, the download must match both, or it is refused.
-   - It must also be this app (`cc.asitis.app`), and not an older version.
+   - It does not compare the file with `update.json` (its version, size or SHA-256). Once downloaded, the file goes straight to Android's installer.
+   - So the APK at `apkUrl` must be the version `update.json` names: an older APK installs, and the popup comes back.
 4. **Install:** the app hands the APK to Android's installer.
    - The first time, Android asks the reader to allow installing apps from As It Is.
    - Android then asks the reader to confirm the install.
    - Android installs the update only if it is signed with the same key as the installed app.
    - Nothing is installed silently.
-5. **Later** closes the popup until the next start. With **`"isForceUpdate": true`** there is no *Later*, and the popup cannot be closed.
+5. **Later** closes the popup until the next start. With **`"forceUpdate": true`** there is no *Later*, and the popup cannot be closed until the update is installed. Do not set it while testing with an APK older than `latestVersionCode`: the popup would come back after every install, and could not be closed.
 
 Offline, or when `update.json` cannot be read or is invalid, the app shows nothing at start.
 
@@ -39,15 +40,13 @@ Offline, or when `update.json` cannot be read or is invalid, the app shows nothi
    - `latestVersionCode` and `latestVersionName`;
    - `apkSha256` and `apkSizeBytes` (from step 2);
    - `releaseNotes` and `publishedAt`;
-   - only when needed: `isForceUpdate`, `mandatory`, `minimumSupportedVersionCode`.
+   - only when needed: `forceUpdate`, `minimumSupportedVersionCode`.
 
    `apkUrl` can stay `https://github.com/rushhour8/AsItIs-Releases/releases/latest/download/AsItIs.apk`, which always points at the latest release's `AsItIs.apk`.
 5. **The check** (*Actions* → *Check update.json*) runs on the change.
    - It fails if the file is not what the app accepts.
-   - It also downloads the APK and fails if its size or checksum differ from the file.
+   - It also downloads the APK and warns if its size or checksum differ from the file (the app no longer checks them).
    - Fix anything it reports before readers see it.
-
-GitHub can serve the old `update.json` for a minute or two after a commit.
 
 ## The fields
 
@@ -57,15 +56,16 @@ GitHub can serve the old `update.json` for a minute or two after a commit.
 | `packageName` | no (`cc.asitis.app`) | Must be the app's package name. |
 | `latestVersionCode` | **yes** | The new APK's `versionCode`, higher than every earlier one. This is what the app compares. |
 | `latestVersionName` | **yes** | The new APK's `versionName`, shown in the popup. |
-| `minimumSupportedVersionCode` | when needed | Installed versions below it are told the update is required. |
-| `mandatory` | when needed | `true`: shown as required to everyone (it can still be put off). |
-| `isForceUpdate` | when needed | `true`: no *Later*, and the popup cannot be closed. |
+| `minimumSupportedVersionCode` | when needed | Installed versions below it must update, as with `forceUpdate`. |
+| `forceUpdate` | when needed | `true`: the update must be installed. No *Later*, and the popup cannot be closed. |
 | `releaseUrl` | optional | The release page (https). |
 | `apkUrl` | if the file name changes | The APK's download link (https). |
-| `apkSha256` | recommended | The APK's SHA-256, 64 hex characters; `""` means not checked. |
-| `apkSizeBytes` | recommended | The APK's size in bytes; `0` means not checked. |
+| `apkSha256` | recommended | The APK's SHA-256, 64 hex characters, or `""`. Shown for checking by hand; the check above compares it. The app does not. |
+| `apkSizeBytes` | recommended | The APK's size in bytes, or `0`. Shown as the download's size until the server tells it. |
 | `releaseNotes` | **yes** | The text shown in the popup. |
 | `publishedAt` | optional | The release date, `YYYY-MM-DD`. |
+
+**One switch, `forceUpdate`.** Earlier files had two. `isForceUpdate` was this switch under another name; the app still reads it. `mandatory` only titled the popup "Update Required", and the popup could still be put off. The app no longer reads it, and the check warns about either.
 
 ## Signing
 
@@ -75,5 +75,5 @@ Test APKs from development builds are signed with a different, debug key. Uninst
 
 ## Now
 
-- `update.json` names version **0.4.0 (code 4)**, the version of the current build. A phone running 0.4.0 is told it is up to date.
-- **No release is published yet.** The first release, with `AsItIs.apk` attached, makes `apkUrl` work. Until then, a build older than code 4 that is offered 0.4.0 is told the file was not found.
+- `update.json` names **v1 (code 5)**, with `forceUpdate` false. Its `apkUrl` is the release tagged `asitis`, `AsItIs-0.4.0-preview.apk`. That APK is version 0.4.0 (code 4), so once installed the app is still code 4 and is offered code 5 again. Attach an APK built as code 5 to test the whole round.
+- **This repository is private.** The app is told "not found" until it is public again.
