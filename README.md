@@ -5,6 +5,8 @@ This public repository holds what the As It Is app needs to update itself. The a
 - **`update.json`**: the published version. The app reads it live each time it starts. It asks GitHub's API for the file as it is now (`https://api.github.com/repos/rushhour8/AsItIs-Releases/contents/update.json?ref=main`), and reads `https://raw.githubusercontent.com/rushhour8/AsItIs-Releases/main/update.json` when the API cannot answer.
 - **This repository must be public.** A private repository answers the app (which signs in to nothing) with "not found", for `update.json` and for the APKs alike.
 - **Releases**: each version's APK, attached to a release as **`AsItIs.apk`**.
+- **`share.json`**: the text the app's *Share app* (side panel) shares, in its `"text"`. The app reads it fresh each time, the same way as `update.json`; offline, it shares the last text it read. Put the release link in it once a release exists.
+- **`policy.json`**: the privacy policy. The small shield icon on the app's About page opens it in the browser (`https://raw.githubusercontent.com/rushhour8/AsItIs-Releases/main/policy.json`). Keep it true to what the app does: change it when the app's handling of data changes.
 
 ## How the app uses it
 

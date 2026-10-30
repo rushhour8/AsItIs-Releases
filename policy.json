@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "title": "As It Is: Privacy Policy",
+  "app": "As It Is (cc.asitis.app), for Android",
+  "effectiveDate": "2026-10-30",
+  "contact": "support@asitis.cc",
+  "sections": [
+    {
+      "heading": "About this policy",
+      "text": "As It Is is a free app for reading the books of His Divine Grace A. C. Bhaktivedanta Swami Prabhupāda. This policy says what the app does with information about you. Questions are welcome at support@asitis.cc."
+    },
+    {
+      "heading": "Your name and mobile number",
+      "text": "When you first open the app, it asks for your name and mobile number. They are saved on your phone and sent to the app's registration database (Google Firebase Cloud Firestore), together with the app's version and the platform (Android), under an anonymous Firebase sign-in that the app creates on your phone. No password, email address, location or contacts are asked for."
+    },
+    {
+      "heading": "Why they are asked for",
+      "text": "Only to identify the app's readers, for our internal records, and to count them."
+    },
+    {
+      "heading": "Who sees them",
+      "text": "Your name and mobile number are not sold and are not shared with anyone. They are kept in the app's own Firebase project; Google runs Firebase as the service that stores them."
+    },
+    {
+      "heading": "Your reading",
+      "text": "Highlights, notes, bookmarks, reading progress and settings stay on your phone. The app does not send them anywhere, and Android's backup is turned off for the app."
+    },
+    {
+      "heading": "When the app uses the internet",
+      "text": "The books are read offline. The app goes online only to: send your registration (above); check for a new version, by reading a file in the app's GitHub repository; read the text that Share app shares, from the same repository; and download Google's English–Hindi language pack, once, if you agree to it. Translation itself then happens on your phone. Google Define and Google Translate open Google in your browser with the words you selected; Google's own privacy policy applies there. Like any website, GitHub and Google receive the usual connection details, such as your internet address, when the app or your browser contacts them."
+    },
+    {
+      "heading": "Crash details",
+      "text": "If the app closes because of an error, the details (the app's and Android's version, the phone model, the time and the error) are kept on your phone. They are sent only if you choose Send details, by your own email app, to support@asitis.cc. Nothing you wrote or read is in them."
+    },
+    {
+      "heading": "Removing your details",
+      "text": "To have your name and mobile number removed from the registration database, write to support@asitis.cc. Uninstalling the app removes everything it kept on your phone."
+    },
+    {
+      "heading": "Changes",
+      "text": "If this policy changes, the new version is published at this same address, with its date above."
+    }
+  ]
+}

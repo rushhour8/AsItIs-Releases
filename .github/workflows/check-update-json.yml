@@ -6,9 +6,9 @@ name: Check update.json
 on:
   push:
     branches: [main]
-    paths: [update.json, .github/**]
+    paths: [update.json, share.json, policy.json, .github/**]
   pull_request:
-    paths: [update.json, .github/**]
+    paths: [update.json, share.json, policy.json, .github/**]
   release:
     types: [published, edited]
   workflow_dispatch:

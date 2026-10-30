@@ -1,4 +1,5 @@
-"""Checks update.json the way the As It Is app reads it, so a broken file never reaches readers.
+"""Checks update.json the way the As It Is app reads it, so a broken file never reaches readers
+(and share.json and policy.json, which the app reads too).
 
 Fails when the file is not what the app accepts: not JSON, another app's package, a version code
 that is not a positive whole number, a link that is not https, a checksum that is not a SHA-256.
@@ -109,6 +110,27 @@ if not errors and repo:
             print(f"APK at apkUrl: {got} bytes, SHA-256 {digest.hexdigest()}")
         except Exception as e:  # noqa: BLE001 - any failure to download is reported as such
             fail(f"the APK at apkUrl could not be downloaded ({e}); the app would show 'not found'")
+
+# share.json: the text "Share app" shares; policy.json: the privacy policy the About page opens
+if os.path.exists("share.json"):
+    try:
+        share = json.load(open("share.json", encoding="utf-8"))
+        text = share.get("text")
+        if share.get("schemaVersion", 1) != 1:
+            fail("share.json: schemaVersion must be 1")
+        if not isinstance(text, str) or not text.strip():
+            fail("share.json: text must be the text to share")
+        elif len(text.strip()) > 4000:
+            fail("share.json: text is longer than the 4,000 characters the app takes")
+    except json.JSONDecodeError as e:
+        fail(f"share.json is not valid JSON: {e.msg} (line {e.lineno})")
+if os.path.exists("policy.json"):
+    try:
+        policy = json.load(open("policy.json", encoding="utf-8"))
+        if not policy.get("sections"):
+            fail("policy.json: it has no sections")
+    except json.JSONDecodeError as e:
+        fail(f"policy.json is not valid JSON: {e.msg} (line {e.lineno})")
 
 for w in warnings:
     print(f"::warning file=update.json::{w}")
