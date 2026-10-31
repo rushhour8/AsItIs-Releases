@@ -3,7 +3,7 @@
   "notification": {
     "id": 2,
     "is_active": true,
-    "force": false,
+    "force": true,
     "max_show_count": 3,
     "title": "Hare Krishna",
     "message": "Write the notice here. Set is_active to true to show it, and give each new notice a new id.",
