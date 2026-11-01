@@ -12,7 +12,7 @@
       "show_button": true,
       "button_text": "share app",
       "action_type": "share",
-      "action_value": "share this app "
+      "action_value": "mailto:support@asitis.cc?subject=As%20It%20Is%20feedback"
     }
   }
 }
