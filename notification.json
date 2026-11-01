@@ -10,8 +10,8 @@
     "read_button_text": "Mark as Read",
     "action_button": {
       "show_button": true,
-      "button_text": "share app",
-      "action_type": "share",
+      "button_text": "Feedback",
+      "action_type": "feedback",
       "action_value": "mailto:support@asitis.cc?subject=As%20It%20Is%20feedback"
     }
   }
