@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
   "notification": {
-    "id": 1,
+    "id": 2,
     "is_active": true,
-    "force": false,
+    "force": true,
     "max_show_count": 3,
     "title": "Hare Krishna",
-    "message": "Write the notice here. Set is_active to true to show it, and give each new notice a new id.",
+    "message": "Please Share this app to atleast one other devotee",
     "read_button_text": "Mark as Read",
     "action_button": {
       "show_button": true,
-      "button_text": "Send Feedback",
-      "action_type": "email",
-      "action_value": "mailto:support@asitis.cc?subject=As%20It%20Is%20feedback"
+      "button_text": "share app",
+      "action_type": "share",
+      "action_value": "share this app "
     }
   }
 }
