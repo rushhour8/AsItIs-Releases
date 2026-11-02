@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "notification": {
-    "id": 0,
-    "is_active": true,
+    "id": 2,
+    "is_active": false,
     "force": true,
     "max_show_count": 3,
     "title": "Hare Krishna",
