@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "packageName": "cc.asitis.app",
-  "latestVersionCode": 5,
-  "latestVersionName": "v2",
+  "latestVersionCode": 1,
+  "latestVersionName": "1.0",
   "minimumSupportedVersionCode": 1,
-  "forceUpdate": true,
+  "forceUpdate": false,
   "releaseUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/latest",
   "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/V1/AsItIs-v1.0.apk",
   "apkSha256": "",

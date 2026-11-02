@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "notification": {
-    "id": 2,
+    "id": 1,
     "is_active": false,
     "force": true,
     "max_show_count": 3,
