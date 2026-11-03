@@ -11,8 +11,8 @@
     "action_button": {
       "show_button": true,
       "button_text": "share",
-      "action_type": "share",
-      "action_value": "shshhsshhs"
+      "action_type": "feedback",
+      "action_value": "mailto:support@asitis.cc?subject=As%20It%20Is%20feedback"
     }
   }
 }
