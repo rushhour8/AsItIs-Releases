@@ -6,9 +6,9 @@
   "minimumSupportedVersionCode": 1,
   "forceUpdate": false,
   "releaseUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/latest",
-  "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/V1/AsItIs-v1.apk",
-  "apkSha256": "",
-  "apkSizeBytes": 0,
+  "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/Sp/AsItIs-v1.0-release.apk",
+  "apkSha256": "503dd57aad6e9611d65f731f9e19e4ccf1421a1342f872f57059d33869661b22",
+  "apkSizeBytes": 193621796,
   "releaseNotes": "The Science of Self-Realization added; updated Small Books and Light of the Bhāgavata, with its new cover; verses in the prose books set apart in their own box; search shows the most exact results first and opens at the words found; updates download inside the app.",
-  "publishedAt": "2026-10-29"
+  "publishedAt": "2026-11-03"
 }
