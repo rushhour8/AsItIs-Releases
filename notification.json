@@ -4,7 +4,7 @@
     "id": 2,
     "is_active": true,
     "force": true,
-    "max_show_count": 3,
+    "max_show_count": 5,
     "title": "Hare Krishna",
     "message": "Please Share this app to atleast one other devotee",
     "read_button_text": "Mark as Read",
@@ -12,7 +12,7 @@
       "show_button": true,
       "button_text": "share",
       "action_type": "share",
-      "action_value": ""
+      "action_value": "shshhsshhs"
     }
   }
 }
