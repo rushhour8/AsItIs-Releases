@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "notification": {
     "id": 1,
-    "is_active": false,
+    "is_active": true,
     "force": true,
     "max_show_count": 3,
     "title": "Hare Krishna",
@@ -10,8 +10,8 @@
     "read_button_text": "Mark as Read",
     "action_button": {
       "show_button": true,
-      "button_text": "Feedback",
-      "action_type": "feedback",
+      "button_text": "share",
+      "action_type": "share",
       "action_value": "mailto:support@asitis.cc?subject=As%20It%20Is%20feedback"
     }
   }
