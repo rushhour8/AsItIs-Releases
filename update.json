@@ -9,6 +9,6 @@
   "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/Sp/AsItIs-v1.0-release.apk",
   "apkSha256": "c6075e4b1673d3f8fe19660c661ecd70118ca0c7fc0ca0b37523a291a88b4707",
   "apkSizeBytes": 193760460,
-  "releaseNotes": "The Science of Self-Realization added; updated Small Books and Light of the Bhāgavata, with its new cover; verses in the prose books set apart in their own box; search shows the most exact results first and opens at the words found; updates download inside the app.",
-  "publishedAt": "2026-11-05"
+  "releaseNotes": "The library app: Śrīla Prabhupāda's original books download once, on the first start (about 78 MB), from the app's own server, with GitHub in reserve, and are then read without internet; synonyms can be selected like the rest of the text; a chapter's title scrolls away with its texts.",
+  "publishedAt": "2026-11-06"
 }

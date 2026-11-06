@@ -16,5 +16,6 @@ The Android app is in [Releases](https://github.com/rushhour8/AsItIs-Releases/re
 - `notification.json`: notices shown in the app
 - `share.json`: the text *Share app* shares
 - `policy.json`: the privacy policy
+- `library/`: the books the library app downloads on its first start (encrypted; also served from https://library.asitis.cc/, which the app tries first). Do not rename or delete these files.
 
 Contact: support@asitis.cc

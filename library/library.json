@@ -1,7 +1,7 @@
 {
   "format": 1,
   "about": "As It Is: the library the library APK downloads (sealed: compressed, then AES-256-GCM encrypted). Files are never changed once published; a changed book is a new file.",
-  "totalSize": 84912740,
+  "totalSize": 77692300,
   "files": [
     {"name": "bg.db", "file": "bg.f31fc81ba5ab9e51.sealed", "size": 923952, "sha256": "f31fc81ba5ab9e517dbc91d7fa293452f7513be58e5fdf215cb41b3c66e5407f", "contentSha256": "153206d15cdcd65527df87b0b1a5f71beac04084b7448dab0a9764bfc174b8e4", "installedSize": 3371008},
     {"name": "krsna.db", "file": "krsna.84ce354c4eb26586.sealed", "size": 970524, "sha256": "84ce354c4eb26586a7d5659d25a49220fdbf53a6bb28f837d7a802043674d737", "contentSha256": "411e24204f77ff82a4ad4aae13e4cb1c86b659262e05cad69f27fed97fb5ab58", "installedSize": 3104768},
@@ -56,7 +56,6 @@
     {"name": "jaladuta.db", "file": "jaladuta.3a48ed164641db8a.sealed", "size": 74452, "sha256": "3a48ed164641db8a37534683dab11ea33d22ee9b10fbe383a8130e4e8af66cc7", "contentSha256": "b6397b8f8f10fddf8fc48b55df8a547cbdf4141620ce2d8f4cbae43712524374", "installedSize": 270336},
     {"name": "letters.db", "file": "letters.920c6e020e1c8d0d.sealed", "size": 6631468, "sha256": "920c6e020e1c8d0d28d2ed41513be283606efd2ec3db6e9dd4fda04f8d1159e5", "contentSha256": "2df8636a6a0411c788450b50cd9dc4d4b4d43072e958c2d9e322f1efdfe768d7", "installedSize": 25051136},
     {"name": "conversations.db", "file": "conversations.b4f73002e4d27398.sealed", "size": 17725272, "sha256": "b4f73002e4d27398cafd4f7e091a480ae2cf57b73e059caf9cb920dee8095044", "contentSha256": "eeb3ce281b19cd994c71c2d2621c47bfcc27996a20fa44f12678fe5d0343e8fd", "installedSize": 56221696},
-    {"name": "lectures.db", "file": "lectures.2841e5a46913d917.sealed", "size": 28161752, "sha256": "2841e5a46913d9172c14e66e5cd1525f7c89997aeba2485eb7ddf9b666de9446", "contentSha256": "dcf7aef48e93b687ee354259335a8a89fec5b8fa594ef5ad1462a46d584ff57c", "installedSize": 94076928},
-    {"name": "dictionary/wordnet.db", "file": "dictionary_wordnet.7de78357b21a8a28.sealed", "size": 7220440, "sha256": "7de78357b21a8a28c8088ba3ed8af62e38fd8c5aed92d1c105f173e6212cbae8", "contentSha256": "c288788ee5c7c24bb86a488dd49daba9aeae829f4b0a93d9dc5e0e97a4dc780a", "installedSize": 23113728}
+    {"name": "lectures.db", "file": "lectures.2841e5a46913d917.sealed", "size": 28161752, "sha256": "2841e5a46913d9172c14e66e5cd1525f7c89997aeba2485eb7ddf9b666de9446", "contentSha256": "dcf7aef48e93b687ee354259335a8a89fec5b8fa594ef5ad1462a46d584ff57c", "installedSize": 94076928}
   ]
 }
