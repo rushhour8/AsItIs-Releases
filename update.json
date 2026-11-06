@@ -6,9 +6,9 @@
   "minimumSupportedVersionCode": 1,
   "forceUpdate": false,
   "releaseUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/latest",
-  "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/Sp/AsItIs-v1.0-release.apk",
-  "apkSha256": "c6075e4b1673d3f8fe19660c661ecd70118ca0c7fc0ca0b37523a291a88b4707",
-  "apkSizeBytes": 193760460,
+  "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/Sp/AsItIs-v1.0-withoutLib.apk",
+  "apkSha256": "ddef045c5a51a303c0984ed557447c94e4e2906617b41a48a3546a91bfdc4ac6",
+  "apkSizeBytes": 50132148,
   "releaseNotes": "The library app: Śrīla Prabhupāda's original books download once, on the first start (about 78 MB), from the app's own server, with GitHub in reserve, and are then read without internet; synonyms can be selected like the rest of the text; a chapter's title scrolls away with its texts.",
   "publishedAt": "2026-11-06"
 }
