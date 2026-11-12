@@ -424,5 +424,5 @@ jobs:
 
           *Translate (English → Hindi) downloads its language pack once, the first time you use it, in every version.*
           EOF
-          gh release create "$TAG" --draft --title "As It Is $V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
+          gh release create "$TAG" --draft --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
           echo "Draft release $TAG made (publish it from Releases)" | tee -a "$GITHUB_STEP_SUMMARY"
