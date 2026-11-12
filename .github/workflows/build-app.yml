@@ -1,0 +1,368 @@
+# Builds the As It Is app here, in this public repository, from its private source repository
+# rushhour8/AsItIs (owner's choice, November 2026: a public repository's Actions minutes are free).
+# The code is changed in AsItIs only; this repository only builds it.
+#
+# Only by hand: Actions > Build the app > Run workflow. Only people with write access to this
+# repository can start it; nothing from a fork or a pull request can.
+#
+# This repository's logs and artifacts are public, so nothing in them may show the books:
+# - every Gradle and test output goes to a file on the runner that is never printed or uploaded;
+#   only counts, the APKs' checks and the names of failed tests are shown;
+# - no Actions cache is used (a cache can be read by other runs of this repository);
+# - only the four signed APKs are uploaded (never a debug APK, a report or a database). The
+#   library's files, encrypted like those already in library/, are uploaded only when asked to
+#   publish them, or when some are new.
+#
+# Secrets (Settings > Secrets and variables > Actions):
+#   ASITIS_SOURCE_TOKEN  a fine-grained personal access token, Repository access: only
+#                        rushhour8/AsItIs, Permissions: Contents: Read-only. Fetches the source.
+#   ASITIS_KEYSTORE_BASE64, ASITIS_KEYSTORE_PASSWORD, ASITIS_KEY_ALIAS, ASITIS_KEY_PASSWORD
+#                        the release key, as in AsItIs.
+name: Build the app
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag or commit of rushhour8/AsItIs to build"
+        required: true
+        default: claude/as-it-is-android-planning-8rqqkp
+      tests:
+        description: "Run the tests first (about 40 minutes)"
+        type: boolean
+        default: true
+      publish_library:
+        description: "Put the library's new files in library/ here (and copy them to Cloudflare)"
+        type: boolean
+        default: false
+      release_tag:
+        description: "Also make a draft release with the four APKs under this tag (empty: no release)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-the-app
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: write   # library/ and the draft release, only when asked
+      actions: write    # start Sync to Cloudflare; remove earlier builds' artifacts
+    env:
+      REF: ${{ inputs.ref }}
+      TAG: ${{ inputs.release_tag }}
+      ASITIS_PUBLIC_LOG: "1"
+    steps:
+      - name: Check the inputs and the secrets
+        env:
+          SOURCE_TOKEN: ${{ secrets.ASITIS_SOURCE_TOKEN }}
+          KEYSTORE_BASE64: ${{ secrets.ASITIS_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          [[ "$REF" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo "::error::The ref '$REF' has characters a branch, tag or commit does not have"; exit 1; }
+          [[ "$TAG" =~ ^[A-Za-z0-9._-]*$ ]] || { echo "::error::The release tag may only have letters, digits, '.', '_' and '-'"; exit 1; }
+          missing=""
+          [ -n "$SOURCE_TOKEN" ] || missing="$missing ASITIS_SOURCE_TOKEN"
+          [ -n "$KEYSTORE_BASE64" ] || missing="$missing ASITIS_KEYSTORE_BASE64"
+          [ -n "$STORE_PASSWORD" ] || missing="$missing ASITIS_KEYSTORE_PASSWORD"
+          [ -n "$KEY_ALIAS" ] || missing="$missing ASITIS_KEY_ALIAS"
+          [ -n "$KEY_PASSWORD" ] || missing="$missing ASITIS_KEY_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::These secrets are not set (Settings > Secrets and variables > Actions):$missing"; exit 1
+          fi
+          echo "LOG=$RUNNER_TEMP/gradle.log" >> "$GITHUB_ENV"
+          echo "Building rushhour8/AsItIs at $REF"
+
+      - name: Check out this repository (library/)
+        uses: actions/checkout@v4
+        with:
+          path: releases
+
+      - name: Check out the app's source (rushhour8/AsItIs)
+        uses: actions/checkout@v4
+        with:
+          repository: rushhour8/AsItIs
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.ASITIS_SOURCE_TOKEN }}
+          path: src
+          persist-credentials: false
+
+      - name: Read the app's version
+        id: version
+        working-directory: src
+        run: |
+          set -euo pipefail
+          V="$(sed -n 's/^ *versionName = "\(.*\)"$/\1/p' app/build.gradle.kts | head -1)"
+          C="$(sed -n 's/^ *versionCode = \([0-9]*\)$/\1/p' app/build.gradle.kts | head -1)"
+          test -n "$V" && test -n "$C"
+          echo "name=$V" >> "$GITHUB_OUTPUT"
+          echo "code=$C" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "As It Is $V ($C), AsItIs commit $(git rev-parse --short HEAD)" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate the Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # (no cache: see the top of this file)
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
+
+      - name: Install the NDK and CMake
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;27.0.12077973" "cmake;3.22.1" > /dev/null
+
+      # Gradle's output stays on the runner (the books may be in a failed test's message). On a
+      # failure the names of the failed tests and the compiler's errors are shown, nothing more.
+      - name: Tests (JVM / Robolectric), lint, and the tests on Android 6.0 and 7.x
+        if: inputs.tests
+        working-directory: src
+        run: |
+          set -uo pipefail
+          summary() {
+            python3 - "$1" <<'EOF'
+          import glob, sys, xml.etree.ElementTree as ET
+          t = f = s = 0
+          failed = []
+          for p in glob.glob(sys.argv[1] + "/*.xml"):
+              r = ET.parse(p).getroot()
+              t += int(r.get("tests", 0)); s += int(r.get("skipped", 0))
+              for tc in r.iter("testcase"):
+                  if tc.find("failure") is not None or tc.find("error") is not None:
+                      failed.append(f"{tc.get('classname')}.{tc.get('name')}")
+          f = len(failed)
+          print(f"{t} run, {f} failed, {s} skipped")
+          for n in failed[:60]:
+              print(f"::error::Test failed: {n}")
+          EOF
+          }
+          compile_errors() { grep -E '^e: ' "$LOG" | sed -E 's#file://[^ ]*/src/##' | head -30 | while IFS= read -r l; do echo "::error::$l"; done || true; }
+          if ! ./gradlew testDebugUnitTest > "$LOG" 2>&1; then
+            compile_errors; echo "Tests: $(summary app/build/test-results/testDebugUnitTest)" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "::error::The tests failed"; exit 1
+          fi
+          echo "Tests: $(summary app/build/test-results/testDebugUnitTest)" | tee -a "$GITHUB_STEP_SUMMARY"
+          if ! ./gradlew lintDebug >> "$LOG" 2>&1; then
+            compile_errors; echo "::error::Android lint failed"; exit 1
+          fi
+          R=app/build/test-results/testDebugUnitTest
+          cp -r "$R" "$RUNNER_TEMP/main-results"
+          legacy() { ./gradlew testDebugUnitTest -Pasitis.apkType=legacy --tests 'cc.asitis.app.legacy.*' > "$RUNNER_TEMP/legacy.log" 2>&1; }
+          if ! legacy; then
+            # (Robolectric fetches each Android version's runtime from Maven Central as the tests start)
+            if grep -q "Failed to fetch maven artifact" "$RUNNER_TEMP/legacy.log"; then
+              echo "::warning::Maven Central refused a Robolectric runtime; trying once more"; sleep 60
+              legacy || { echo "Legacy tests: $(summary "$R")"; echo "::error::The tests on Android 6.0 and 7.x failed"; exit 1; }
+            else
+              echo "Legacy tests: $(summary "$R")"; echo "::error::The tests on Android 6.0 and 7.x failed"; exit 1
+            fi
+          fi
+          echo "Tests on Android 6.0-7.1: $(summary "$R")" | tee -a "$GITHUB_STEP_SUMMARY"
+          rm -rf "$R" && cp -r "$RUNNER_TEMP/main-results" "$R"
+
+      - name: Build and check the release APK (universal)
+        working-directory: src
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ASITIS_KEYSTORE_BASE64 }}
+          ASITIS_SIGNING_STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
+          ASITIS_SIGNING_KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
+          ASITIS_SIGNING_KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export ASITIS_SIGNING_STORE_FILE="$RUNNER_TEMP/release.jks"
+          ./gradlew assembleRelease >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; { grep -E '^e: ' "$LOG" | sed -E 's#file://[^ ]*/src/##' | head -30 | sed 's/^/::error::/' || true; }; echo "::error::The release build failed"; exit 1; }
+          rm -f "$RUNNER_TEMP/release.jks"
+          REL=app/build/outputs/apk/release/app-release.apk
+          test -f "$REL" || { echo "::error::The signed release APK was not built"; exit 1; }
+          AAPT2="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2"
+          LIST="$(unzip -Z1 "$REL")"
+          if grep -Ei '\.(db|sqlite|sqlite3|ttf|otf|png|jpg)$' <<<"$LIST" | grep -v '^res/'; then
+            echo "::error::Forbidden content found in the release APK"; exit 1
+          fi
+          EXPECTED=$( (grep -Ev '^\s*(#|$)' app/books.txt | awk '{sub(/\.db$/, "", $1); print "assets/books/"$1".sealed"}'; echo assets/dictionary/wordnet.sealed) | sort)
+          PACKAGED=$(grep '\.sealed$' <<<"$LIST" | sort)
+          [ "$EXPECTED" = "$PACKAGED" ] || { echo "::error::The sealed books differ from app/books.txt"; exit 1; }
+          RES="$("$AAPT2" dump resources "$REL")"
+          for F in verse_indevr verse_rm_devanagari verse_inbenr verse_shobhika; do
+            grep -q "font/$F" <<<"$RES" || { echo "::error::Font $F missing"; exit 1; }
+          done
+          for L in OFL-notosans.txt OFL-shobhika.txt WordNet-LICENSE.txt; do
+            grep -q "^assets/licenses/$L$" <<<"$LIST" || { echo "::error::Licence $L missing"; exit 1; }
+          done
+          # every file read in full: no plaintext database or book text outside the sealed assets, not
+          # the content key; every sealed asset opened with the build's key and compared with what it sealed
+          python3 -m venv "$RUNNER_TEMP/m4" && "$RUNNER_TEMP/m4/bin/pip" install --quiet cryptography
+          "$RUNNER_TEMP/m4/bin/python" -I .github/scripts/verify_apk_security.py "$REL" app/build/asitis/secrets/content.key app/build/asitis/plain/release app/books.txt
+          grep -Ev '^\s*(#|$)' app/books.txt | while read -r NAME SRC; do
+            P="app/build/asitis/plain/release/books/$NAME"
+            if [ -f "app/book-edits/${NAME%.db}.sql" ]; then
+              ! cmp -s "$P" "$SRC" || { echo "::error::$NAME was sealed without its edit"; exit 1; }
+            else
+              cmp -s "$P" "$SRC" || { echo "::error::$NAME differs from its source"; exit 1; }
+            fi
+          done
+          cmp -s app/build/asitis/plain/release/dictionary/wordnet.db app/content/dictionary/wordnet.db || { echo "::error::The dictionary differs"; exit 1; }
+          for dex in $(unzip -Z1 "$REL" | grep '\.dex$'); do
+            if unzip -p "$REL" "$dex" | grep -a 'AS_IT_IS_DEV_SAMPLE_CONTENT' >/dev/null; then
+              echo "::error::Development sample content found in the release APK"; exit 1
+            fi
+          done
+          RB="$("$AAPT2" dump badging "$REL")"
+          grep -q "^package: name='cc.asitis.app'" <<<"$RB" || { echo "::error::applicationId is not cc.asitis.app"; exit 1; }
+          grep -q "minSdkVersion:'26'" <<<"$RB" || { echo "::error::minSdk is not 26"; exit 1; }
+          grep -q "versionCode='${{ steps.version.outputs.code }}' versionName='${{ steps.version.outputs.name }}'" <<<"$RB" || { echo "::error::The APK's version is not ${{ steps.version.outputs.name }}"; exit 1; }
+          grep -q "^native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'$" <<<"$RB" || { echo "::error::The universal APK does not carry every processor"; exit 1; }
+          [ "$(unzip -p "$REL" assets/books/bg.sealed | head -c 8)" = "AISEALv1" ] || { echo "::error::The universal APK's databases are not in sealed format 1"; exit 1; }
+          SIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
+          CERTS="$("$SIGNER" verify --verbose --print-certs "$REL" 2>&1)" || { echo "::error::The release APK does not verify"; exit 1; }
+          grep -E "^(Verifies|Verified using|Number of signers)|certificate SHA-256 digest:" <<<"$CERTS" || true
+          grep -qE "certificate SHA-256 digest: [0-9a-f]{64}" <<<"$CERTS" || { echo "::error::The release APK is not signed"; exit 1; }
+          mkdir -p "$GITHUB_WORKSPACE/upload"
+          cp "$REL" "$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}-release.apk"
+
+      - name: Build and check the small and legacy release APKs
+        working-directory: src
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ASITIS_KEYSTORE_BASE64 }}
+          ASITIS_SIGNING_STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
+          ASITIS_SIGNING_KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
+          ASITIS_SIGNING_KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export ASITIS_SIGNING_STORE_FILE="$RUNNER_TEMP/release.jks"
+          for T in small legacy; do
+            ./gradlew assembleRelease -Pasitis.apkType=$T >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; echo "::error::The $T build failed"; exit 1; }
+            A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}-$T-release.apk"
+            cp app/build/outputs/apk/release/app-release.apk "$A"
+            bash .github/scripts/check_apk_type.sh "$A" "$T" app/build/asitis/plain/release true "${{ steps.version.outputs.name }}" "${{ steps.version.outputs.code }}"
+          done
+          rm -f "$RUNNER_TEMP/release.jks"
+
+      # The library APK (no book in it: it downloads the library on its first start) and the library's
+      # files. The library's key comes from the release key, so the same books give the same files:
+      # only the files not yet in library/ here are new.
+      - name: Build and check the library APK and its library
+        id: library
+        working-directory: src
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ASITIS_KEYSTORE_BASE64 }}
+          ASITIS_SIGNING_STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
+          ASITIS_SIGNING_KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
+          ASITIS_SIGNING_KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export ASITIS_SIGNING_STORE_FILE="$RUNNER_TEMP/release.jks"
+          ./gradlew assembleRelease -Pasitis.apkType=library >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; echo "::error::The library build failed"; exit 1; }
+          rm -f "$RUNNER_TEMP/release.jks"
+          A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}-library-release.apk"
+          cp app/build/outputs/apk/release/app-release.apk "$A"
+          LIB=app/build/asitis/library/release
+          bash .github/scripts/check_apk_type.sh "$A" library app/build/asitis/plain/release true "${{ steps.version.outputs.name }}" "${{ steps.version.outputs.code }}" "$LIB"
+          NEW="$GITHUB_WORKSPACE/library-new/library"
+          mkdir -p "$NEW"
+          missing=0; total=0
+          for f in "$LIB"/*.sealed; do
+            total=$((total + 1)); n=$(basename "$f")
+            if [ -f "$GITHUB_WORKSPACE/releases/library/$n" ] && cmp -s "$f" "$GITHUB_WORKSPACE/releases/library/$n"; then :; else
+              missing=$((missing + 1)); cp "$f" "$NEW/"; echo "new: $n"
+            fi
+          done
+          cp "$LIB/library.json" "$NEW/"
+          cmp -s "$LIB/library.json" "$GITHUB_WORKSPACE/releases/library/library.json" && changed=false || changed=true
+          echo "missing=$missing" >> "$GITHUB_OUTPUT"
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo "Library: $total files, $missing not yet in library/ here; library.json changed: $changed" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: The APKs' SHA-256 (for update.json)
+        run: |
+          cd upload
+          { echo; echo '| APK | Bytes | SHA-256 |'; echo '|---|---|---|'
+            for f in *.apk; do echo "| $f | $(stat -c %s "$f") | \`$(sha256sum "$f" | cut -d' ' -f1)\` |"; done; } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # Only this workflow's latest build is kept among the artifacts.
+      - name: Remove earlier builds' artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const runs = await github.paginate(github.rest.actions.listWorkflowRuns, { owner, repo, workflow_id: 'build-app.yml', per_page: 100 });
+            for (const r of runs) {
+              if (r.id === context.runId) continue;
+              const arts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, { owner, repo, run_id: r.id, per_page: 100 });
+              for (const a of arts) {
+                await github.rest.actions.deleteArtifact({ owner, repo, artifact_id: a.id });
+                core.info(`deleted ${a.name}, run ${r.id}`);
+              }
+            }
+
+      - name: Upload the four signed APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: AsItIs-v${{ steps.version.outputs.name }}-APKs
+          path: upload/*.apk
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+      # The library's files are encrypted (the same as those published in library/); uploaded only
+      # when some are new and they are not being published here at once.
+      - name: Upload the library's new files
+        if: "!inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: AsItIs-library
+          path: library-new/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+      # New files are added beside the old ones (never deleted: phones with an older app may still
+      # fetch them); then Sync to Cloudflare copies library/ to library.asitis.cc.
+      - name: Publish the library's new files in library/
+        if: inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true')
+        working-directory: releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SRC_SHA: ${{ steps.version.outputs.sha }}
+        run: |
+          set -euo pipefail
+          cp "$GITHUB_WORKSPACE"/library-new/library/* library/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add library
+          git commit -q -m "library: files from the build of AsItIs ${SRC_SHA:0:12}"
+          git push origin HEAD:main
+          gh workflow run sync-to-cloudflare.yml --ref main
+          echo "Library published in library/; Sync to Cloudflare started" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Make a draft release with the APKs
+        if: inputs.release_tag != ''
+        working-directory: releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SRC_SHA: ${{ steps.version.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" > /dev/null 2>&1; then echo "::error::A release '$TAG' already exists"; exit 1; fi
+          gh release create "$TAG" --draft --title "As It Is ${{ steps.version.outputs.name }}" \
+            --notes "As It Is ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }}), built from AsItIs ${SRC_SHA:0:12}. A draft: publish it when ready, then update update.json." \
+            "$GITHUB_WORKSPACE"/upload/*.apk
+          echo "Draft release $TAG made (publish it from Releases)" | tee -a "$GITHUB_STEP_SUMMARY"
