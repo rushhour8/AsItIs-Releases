@@ -1,0 +1,89 @@
+# Copies the files the app reads from this repository to Cloudflare R2, where the app reads them
+# first (owner's choice, November 2026): GitHub stays the place they are edited, and the app's
+# reserve when Cloudflare does not answer.
+#
+#   update.json, share.json, notification.json, policy.json  ->  bucket asitis-app      (https://app.asitis.cc/)
+#   library/<file>                                            ->  bucket asitis-library  (https://library.asitis.cc/)
+#
+# Runs on each push to main that changes one of them, and by hand (Actions > Sync to Cloudflare >
+# Run workflow: copies every file). Needs two repository secrets (Settings > Secrets and variables >
+# Actions): CLOUDFLARE_API_TOKEN (an API token with "Workers R2 Storage: Edit" on this account) and
+# CLOUDFLARE_ACCOUNT_ID. Without them it does nothing and says so. Files are only added or replaced,
+# never deleted; each copy is read back from its public address and compared byte for byte.
+name: Sync to Cloudflare
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - update.json
+      - share.json
+      - notification.json
+      - policy.json
+      - library/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-to-cloudflare
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Copy the changed files to R2
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${CF_TOKEN}" ] || [ -z "${CF_ACCOUNT}" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not set: nothing copied (Settings > Secrets and variables > Actions)."
+            exit 0
+          fi
+          before="${{ github.event.before }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$before" ] || ! git cat-file -e "$before^{commit}" 2>/dev/null; then
+            # by hand, or the commit before is not known: every file
+            files=$(ls update.json share.json notification.json policy.json 2>/dev/null; find library -type f ! -name README.md 2>/dev/null | sort)
+          else
+            files=$(git diff --name-only --diff-filter=AM "$before" "${{ github.sha }}" -- update.json share.json notification.json policy.json library | grep -v '^library/README.md$' || true)
+          fi
+          if [ -z "$files" ]; then echo "Nothing to copy."; exit 0; fi
+          failed=0
+          for f in $files; do
+            [ -f "$f" ] || continue
+            if [ ! -s "$f" ]; then echo "::error::$f is empty: not copied"; failed=1; continue; fi
+            case "$f" in
+              library/*) bucket=asitis-library; key="${f#library/}"; public="https://library.asitis.cc/"; type=application/octet-stream ;;
+              *.json)    bucket=asitis-app;     key="$f";            public="https://app.asitis.cc/";     type="application/json; charset=utf-8" ;;
+              *) continue ;;
+            esac
+            # the key as a URL path segment (the files' names are plain: letters, digits, dot, dash, underscore)
+            if ! [[ "$key" =~ ^[A-Za-z0-9._-]+$ ]]; then echo "::error::$f: unexpected name, not copied"; failed=1; continue; fi
+            echo "Copying $f -> $bucket/$key"
+            code=$(curl -sS -o response.json -w '%{http_code}' --retry 3 --retry-all-errors --max-time 600 -X PUT \
+              -H "Authorization: Bearer ${CF_TOKEN}" -H "Content-Type: ${type}" \
+              --data-binary @"$f" \
+              "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/r2/buckets/${bucket}/objects/${key}") || code=000
+            if [ "$code" != "200" ]; then
+              echo "::error::$f: Cloudflare answered HTTP $code"; head -c 500 response.json || true; echo; failed=1; continue
+            fi
+            # read back from the public address (a fresh copy) and compare
+            sleep 2
+            if curl -fsS --retry 3 --max-time 600 -H 'Cache-Control: no-cache' -o readback.bin "${public}${key}?t=$(date +%s%N)" && cmp -s "$f" readback.bin; then
+              echo "  ok: ${public}${key} is the same file"
+            else
+              echo "::error::$f: the copy at ${public}${key} is not the same file"; failed=1
+            fi
+          done
+          rm -f response.json readback.bin
+          exit $failed
