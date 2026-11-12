@@ -1,0 +1,21 @@
+# Temporary: checks what the bare Cloudflare addresses return. Delete with its branch.
+name: Probe app.asitis.cc
+on:
+  push:
+    branches: [probe-app-asitis]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          curl -sS -o upd.json https://app.asitis.cc/update.json
+          echo "update.json sha256: $(sha256sum upd.json | cut -c1-16)"
+          for u in "https://app.asitis.cc/" "https://app.asitis.cc" "https://app.asitis.cc/apk/" "https://app.asitis.cc/no-such-file.json" "https://library.asitis.cc/" "https://media.asitis.cc/"; do
+            echo "===== $u"
+            curl -sS -D h.txt -o b.bin "$u" || true
+            grep -iE "^HTTP|^content-type|^content-disposition|^content-length|^location|^server|^cf-cache-status" h.txt
+            echo "body sha256: $(sha256sum b.bin | cut -c1-16)  first bytes: $(head -c 160 b.bin | tr '\n' ' ')"
+          done
