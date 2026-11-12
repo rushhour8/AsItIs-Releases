@@ -143,8 +143,11 @@ jobs:
               r = ET.parse(p).getroot()
               t += int(r.get("tests", 0)); s += int(r.get("skipped", 0))
               for tc in r.iter("testcase"):
-                  if tc.find("failure") is not None or tc.find("error") is not None:
-                      failed.append(f"{tc.get('classname')}.{tc.get('name')}")
+                  bad = tc.find("failure") if tc.find("failure") is not None else tc.find("error")
+                  if bad is not None:
+                      # the exception's class only: its message can quote a book
+                      kind = (bad.get("type") or "?").rsplit(".", 1)[-1]
+                      failed.append(f"{tc.get('classname')}.{tc.get('name')} ({kind})")
           f = len(failed)
           print(f"{t} run, {f} failed, {s} skipped")
           for n in failed[:60]:
