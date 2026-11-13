@@ -1,18 +1,46 @@
+# ==============================================================================
+#  As It Is — the message shown on the home screen (notification.json)
+#  Lines starting with # are notes for you: the app skips them.
+#
+#  There are three kinds below: POPUP, MAIL and SHARE.
+#  - To show one, set its "on" to true (and the others to false).
+#  - If more than one is on, the FIRST one from the top is shown.
+#  - A message pops up once. If you change its title, message or button,
+#    it is a new message and pops up again.
+#  - "force": true  -> it cannot be closed (no X, no Back, no tap outside)
+#    until its button is pressed; it comes back at every start until then.
+#  - Every message shown also stays 7 days in the side panel (Notifications).
+#  - Write \n inside a text for a new line.
+# ==============================================================================
 {
-  "schemaVersion": 1,
-  "notification": {
-    "id": 1,
-    "is_active": false,
-    "force": true,
-    "max_show_count": 5,
+  # 1) POPUP: a message with one button (OK) that closes it.
+  "popup": {
+    "on": false,
+    "force": false,
     "title": "Hare Krishna",
-    "message": "Please Share this app to atleast one other devotee",
-    "read_button_text": "Mark as Read",
-    "action_button": {
-      "show_button": true,
-      "button_text": "feedback",
-      "action_type": "feedback",
-      "action_value": "mailto:support@asitis.cc?subject=As%20It%20Is%20feedback"
-    }
+    "message": "Write your message here.",
+    "button": "OK"
+  },
+
+  # 2) MAIL: a message whose button opens the reader's email app,
+  #    already addressed to "to", with the subject and first lines written.
+  "mail": {
+    "on": false,
+    "force": false,
+    "title": "Your feedback",
+    "message": "How do you find As It Is? Please write to us.",
+    "button": "Write to us",
+    "to": "support@asitis.cc",
+    "subject": "As It Is feedback",
+    "body": "Hare Krishna,"
+  },
+
+  # 3) SHARE: a message whose button shares the app (the text in share.json).
+  "share": {
+    "on": false,
+    "force": false,
+    "title": "Share As It Is",
+    "message": "Please share As It Is with at least one other devotee.",
+    "button": "Share"
   }
 }

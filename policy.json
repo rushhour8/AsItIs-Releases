@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "title": "As It Is: Privacy Policy",
   "app": "As It Is (cc.asitis.app), for Android",
-  "effectiveDate": "2026-10-30",
+  "effectiveDate": "2026-11-13",
   "contact": "support@asitis.cc",
   "sections": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "heading": "When the app uses the internet",
-      "text": "The books are read offline. The app goes online only to: send your registration (above); check for a new version, by reading a file in the app's GitHub repository; read the text that Share app shares, from the same repository; and download Google's English–Hindi language pack, once, if you agree to it. Translation itself then happens on your phone. Google Define and Google Translate open Google in your browser with the words you selected; Google's own privacy policy applies there. Like any website, GitHub and Google receive the usual connection details, such as your internet address, when the app or your browser contacts them."
+      "text": "The books are read offline. The app goes online only to: send your registration (above); on its first start, show the app's key server (keys.asitis.cc) that the phone has not been changed, and receive the key that opens the books (the phone's own security chip signs a certificate naming the app and the phone's security state, such as whether its bootloader is locked: no name, number or other personal detail); download the books' library once, from the app's server on Cloudflare or, if that does not answer, the app's GitHub repository; check for a new version, and read the text that Share app shares and the app's messages, from the same two places; and download Google's English–Hindi language pack, once, if you agree to it. Translation itself then happens on your phone. Google Define and Google Translate open Google in your browser with the words you selected; Google's own privacy policy applies there. Like any website, Cloudflare, GitHub and Google receive the usual connection details, such as your internet address, when the app or your browser contacts them."
     },
     {
       "heading": "Crash details",

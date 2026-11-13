@@ -1,4 +1,10 @@
+# ==============================================================================
+#  As It Is — the text that "Share app" shares (share.json)
+#  It is also what the SHARE message's button shares (notification.json).
+#  Lines starting with # are notes for you: the app skips them.
+#  Write \n inside the text for a new line. Keep the download link up to date
+#  when you publish a new version.
+# ==============================================================================
 {
-  "schemaVersion": 1,
-  "text": "Hare Krishna Prabhu 🙏\nDandwat Pranam\n\nRead the Original & Unedited Books of Vishwaguru His Divine Grace A. C. Bhaktivedanta Swami Prabhupāda.\n\n📖 Every text in this application has been meticulously verified against the original scanned first-edition prints to ensure 100% textual authenticity.\n\nPlease share this with other devotees.\n\n📥 Download As It Is App:\nhttps://github.com/rushhour8/AsItIs-Releases/releases/download/Sp/AsItIs-v1.0-withoutLib.apk\n\nYs"
+  "text": "Hare Krishna Prabhu 🙏\nDandwat Pranam\n\nRead the Original & Unedited Books of Vishwaguru His Divine Grace A. C. Bhaktivedanta Swami Prabhupāda.\n\n📖 Every text in this application has been meticulously verified against the original scanned first-edition prints to ensure 100% textual authenticity.\n\nPlease share this with other devotees.\n\n📥 Download As It Is App:\nhttps://app.asitis.cc/apk/AsItIs-v1.0.apk\n(or: https://github.com/rushhour8/AsItIs-Releases/releases/latest)\n\nYs"
 }

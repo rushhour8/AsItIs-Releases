@@ -1,14 +1,39 @@
+# ==============================================================================
+#  As It Is — the update the app offers (update.json)
+#  Lines starting with # are notes for you: the app skips them.
+#
+#  To offer a new version:
+#   1. raise "versionCode" (always a higher whole number than before),
+#   2. change "versionName", "notes" and the two links,
+#   3. put the new APK's "sha256" and "sizeBytes" (from the build's summary).
+#  A phone whose app has a LOWER versionCode is offered the update;
+#  the same or higher: nothing is shown.
+# ==============================================================================
 {
-  "schemaVersion": 1,
-  "packageName": "cc.asitis.appp",
-  "latestVersionCode": 1,
-  "latestVersionName": "1.0",
-  "minimumSupportedVersionCode": 1,
-  "forceUpdate": false,
-  "releaseUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/latest",
-  "apkUrl": "https://github.com/rushhour8/AsItIs-Releases/releases/download/Sp/AsItIs-v1.0-withoutLib.apk",
-  "apkSha256": "ddef045c5a51a303c0984ed557447c94e4e2906617b41a48a3546a91bfdc4ac6",
-  "apkSizeBytes": 50132148,
-  "releaseNotes": "The library app: Śrīla Prabhupāda's original books download once, on the first start (about 78 MB), from the app's own server, with GitHub in reserve, and are then read without internet; synonyms can be selected like the rest of the text; a chapter's title scrolls away with its texts.",
-  "publishedAt": "2026-11-06"
+  # This app's name on Android. Never change it.
+  "packageName": "cc.asitis.app",
+
+  # The newest version: its number and its name.
+  "versionCode": 1,
+  "versionName": "1.0",
+
+  # What is new: shown in the update popup. Write \n for a new line.
+  "notes": "Śrīla Prabhupāda's original books, downloaded once and then read without internet.",
+
+  # true  = the update MUST be installed (no "Later"; the popup cannot be closed).
+  # false = the reader may put it off.
+  "mandatory": false,
+
+  # Where the new APK is downloaded from: the primary link first;
+  # if it does not give the app (blocked, missing, an error), the secondary link.
+  # Both must start with https://
+  "primaryLink": "https://app.asitis.cc/apk/AsItIs-v1.0.apk",
+  "secondaryLink": "https://github.com/rushhour8/AsItIs-Releases/releases/download/v1.0/AsItIs-v1.0.apk",
+
+  # (Recommended) the APK's SHA-256: every download is checked against it, so a
+  # wrong or changed file is never installed. Leave "" to skip the check.
+  "sha256": "d4f1fac713b2abd4b428cc10a31d4d76537448718033ac9beec4c7fdb695a4a3",
+
+  # (Optional) the APK's size in bytes, for the progress bar.
+  "sizeBytes": 51198002
 }
