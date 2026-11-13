@@ -9,15 +9,24 @@
 # - every Gradle and test output goes to a file on the runner that is never printed or uploaded;
 #   only counts, the APKs' checks and the names of failed tests are shown;
 # - no Actions cache is used (a cache can be read by other runs of this repository);
-# - only the four signed APKs are uploaded (never a debug APK, a report or a database). The
+# - only the one signed APK is uploaded (never a debug APK, a report or a database). The
 #   library's files, encrypted like those already in library/, are uploaded only when asked to
 #   publish them, or when some are new.
+#
+# One APK only (owner's decision, 13 Nov 2026): "AsItIs-v<version>.apk", the library APK — every
+# processor (ARM and Intel), no book inside: on its first start the phone proves itself genuine to the
+# key server (keys.asitis.cc: hardware attestation, not rooted), receives the books' key, then
+# downloads the library once from Cloudflare (GitHub's library/ in reserve). No books-inside APK is
+# built any more (Universal, compressed-universal, legacy-release).
 #
 # Secrets (Settings > Secrets and variables > Actions):
 #   ASITIS_SOURCE_TOKEN  a fine-grained personal access token, Repository access: only
 #                        rushhour8/AsItIs, Permissions: Contents: Read-only. Fetches the source.
 #   ASITIS_KEYSTORE_BASE64, ASITIS_KEYSTORE_PASSWORD, ASITIS_KEY_ALIAS, ASITIS_KEY_PASSWORD
 #                        the release key, as in AsItIs.
+#   ASITIS_LIBRARY_KEY   the books' key (64 hex characters), the same value as the key server's
+#                        LIBRARY_KEY secret on Cloudflare. Only the library step sees it; it never
+#                        enters the APK (the APK check fails the build if it does).
 name: Build the app
 
 on:
@@ -32,11 +41,11 @@ on:
         type: boolean
         default: true
       publish_library:
-        description: "Put the library's new files in library/ here (and copy them to Cloudflare)"
+        description: "Put the library's files in library/ here, removing files no longer listed (and copy them to Cloudflare)"
         type: boolean
         default: false
       release_tag:
-        description: "Also make a draft release with the four APKs under this tag (empty: no release)"
+        description: "Also make a draft release with the APK under this tag (empty: no release)"
         required: false
         default: ""
 
@@ -66,6 +75,7 @@ jobs:
           STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
+          LIBRARY_KEY: ${{ secrets.ASITIS_LIBRARY_KEY }}
         run: |
           set -euo pipefail
           [[ "$REF" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo "::error::The ref '$REF' has characters a branch, tag or commit does not have"; exit 1; }
@@ -76,6 +86,11 @@ jobs:
           [ -n "$STORE_PASSWORD" ] || missing="$missing ASITIS_KEYSTORE_PASSWORD"
           [ -n "$KEY_ALIAS" ] || missing="$missing ASITIS_KEY_ALIAS"
           [ -n "$KEY_PASSWORD" ] || missing="$missing ASITIS_KEY_PASSWORD"
+          # the library's books key (server-held; the same value as the key server's LIBRARY_KEY)
+          [ -n "$LIBRARY_KEY" ] || missing="$missing ASITIS_LIBRARY_KEY"
+          if [ -n "$LIBRARY_KEY" ] && ! [[ "$LIBRARY_KEY" =~ ^[0-9a-fA-F]{64}$ ]]; then
+            echo "::error::ASITIS_LIBRARY_KEY must be 64 hexadecimal characters (openssl rand -hex 32)"; exit 1
+          fi
           if [ -n "$missing" ]; then
             echo "::error::These secrets are not set (Settings > Secrets and variables > Actions):$missing"; exit 1
           fi
@@ -178,93 +193,10 @@ jobs:
           echo "Tests on Android 6.0-7.1: $(summary "$R")" | tee -a "$GITHUB_STEP_SUMMARY"
           rm -rf "$R" && cp -r "$RUNNER_TEMP/main-results" "$R"
 
-      - name: Build and check the release APK (universal)
-        working-directory: src
-        env:
-          KEYSTORE_BASE64: ${{ secrets.ASITIS_KEYSTORE_BASE64 }}
-          ASITIS_SIGNING_STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
-          ASITIS_SIGNING_KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
-          ASITIS_SIGNING_KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
-        run: |
-          set -euo pipefail
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
-          export ASITIS_SIGNING_STORE_FILE="$RUNNER_TEMP/release.jks"
-          ./gradlew assembleRelease >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; { grep -E '^e: ' "$LOG" | sed -E 's#file://[^ ]*/src/##' | head -30 | sed 's/^/::error::/' || true; }; echo "::error::The release build failed"; exit 1; }
-          rm -f "$RUNNER_TEMP/release.jks"
-          REL=app/build/outputs/apk/release/app-release.apk
-          test -f "$REL" || { echo "::error::The signed release APK was not built"; exit 1; }
-          AAPT2="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2"
-          LIST="$(unzip -Z1 "$REL")"
-          if grep -Ei '\.(db|sqlite|sqlite3|ttf|otf|png|jpg)$' <<<"$LIST" | grep -v '^res/'; then
-            echo "::error::Forbidden content found in the release APK"; exit 1
-          fi
-          EXPECTED=$( (grep -Ev '^\s*(#|$)' app/books.txt | awk '{sub(/\.db$/, "", $1); print "assets/books/"$1".sealed"}'; echo assets/dictionary/wordnet.sealed; echo assets/audio/recordings.sealed) | sort)
-          PACKAGED=$(grep '\.sealed$' <<<"$LIST" | sort)
-          [ "$EXPECTED" = "$PACKAGED" ] || { echo "::error::The sealed books differ from app/books.txt"; exit 1; }
-          RES="$("$AAPT2" dump resources "$REL")"
-          for F in verse_indevr verse_rm_devanagari verse_inbenr verse_shobhika; do
-            grep -q "font/$F" <<<"$RES" || { echo "::error::Font $F missing"; exit 1; }
-          done
-          for L in OFL-notosans.txt OFL-shobhika.txt WordNet-LICENSE.txt; do
-            grep -q "^assets/licenses/$L$" <<<"$LIST" || { echo "::error::Licence $L missing"; exit 1; }
-          done
-          # every file read in full: no plaintext database or book text outside the sealed assets, not
-          # the content key; every sealed asset opened with the build's key and compared with what it sealed
-          python3 -m venv "$RUNNER_TEMP/m4" && "$RUNNER_TEMP/m4/bin/pip" install --quiet cryptography
-          "$RUNNER_TEMP/m4/bin/python" -I .github/scripts/verify_apk_security.py "$REL" app/build/asitis/secrets/content.key app/build/asitis/plain/release app/books.txt
-          grep -Ev '^\s*(#|$)' app/books.txt | while read -r NAME SRC; do
-            P="app/build/asitis/plain/release/books/$NAME"
-            if [ -f "app/book-edits/${NAME%.db}.sql" ]; then
-              ! cmp -s "$P" "$SRC" || { echo "::error::$NAME was sealed without its edit"; exit 1; }
-            else
-              cmp -s "$P" "$SRC" || { echo "::error::$NAME differs from its source"; exit 1; }
-            fi
-          done
-          cmp -s app/build/asitis/plain/release/dictionary/wordnet.db app/content/dictionary/wordnet.db || { echo "::error::The dictionary differs"; exit 1; }
-          cmp -s app/build/asitis/plain/release/audio/recordings.db app/content/audio/recordings.db || { echo "::error::The recordings list differs"; exit 1; }
-          for dex in $(unzip -Z1 "$REL" | grep '\.dex$'); do
-            if unzip -p "$REL" "$dex" | grep -a 'AS_IT_IS_DEV_SAMPLE_CONTENT' >/dev/null; then
-              echo "::error::Development sample content found in the release APK"; exit 1
-            fi
-          done
-          RB="$("$AAPT2" dump badging "$REL")"
-          grep -q "^package: name='cc.asitis.app'" <<<"$RB" || { echo "::error::applicationId is not cc.asitis.app"; exit 1; }
-          grep -q "minSdkVersion:'26'" <<<"$RB" || { echo "::error::minSdk is not 26"; exit 1; }
-          grep -q "versionCode='${{ steps.version.outputs.code }}' versionName='${{ steps.version.outputs.name }}'" <<<"$RB" || { echo "::error::The APK's version is not ${{ steps.version.outputs.name }}"; exit 1; }
-          grep -q "^native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'$" <<<"$RB" || { echo "::error::The universal APK does not carry every processor"; exit 1; }
-          [ "$(unzip -p "$REL" assets/books/bg.sealed | head -c 8)" = "AISEALv1" ] || { echo "::error::The universal APK's databases are not in sealed format 1"; exit 1; }
-          SIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
-          CERTS="$("$SIGNER" verify --verbose --print-certs "$REL" 2>&1)" || { echo "::error::The release APK does not verify"; exit 1; }
-          grep -E "^(Verifies|Verified using|Number of signers)|certificate SHA-256 digest:" <<<"$CERTS" || true
-          grep -qE "certificate SHA-256 digest: [0-9a-f]{64}" <<<"$CERTS" || { echo "::error::The release APK is not signed"; exit 1; }
-          mkdir -p "$GITHUB_WORKSPACE/upload"
-          cp "$REL" "$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}-Universal.apk"
-
-      - name: Build and check the small and legacy release APKs
-        working-directory: src
-        env:
-          KEYSTORE_BASE64: ${{ secrets.ASITIS_KEYSTORE_BASE64 }}
-          ASITIS_SIGNING_STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
-          ASITIS_SIGNING_KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
-          ASITIS_SIGNING_KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
-        run: |
-          set -euo pipefail
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
-          export ASITIS_SIGNING_STORE_FILE="$RUNNER_TEMP/release.jks"
-          # (named as the owner's releases name them: small = compressed-universal, legacy = legacy-release)
-          for T in small legacy; do
-            ./gradlew assembleRelease -Pasitis.apkType=$T >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; echo "::error::The $T build failed"; exit 1; }
-            case "$T" in small) N=compressed-universal ;; legacy) N=legacy-release ;; esac
-            A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}-$N.apk"
-            cp app/build/outputs/apk/release/app-release.apk "$A"
-            bash .github/scripts/check_apk_type.sh "$A" "$T" app/build/asitis/plain/release true "${{ steps.version.outputs.name }}" "${{ steps.version.outputs.code }}"
-          done
-          rm -f "$RUNNER_TEMP/release.jks"
-
-      # The library APK (no book in it: it downloads the library on its first start) and the library's
-      # files. The library's key comes from the release key, so the same books give the same files:
+      # The one APK (no book in it: it downloads the library on its first start) and the library's
+      # files, sealed with ASITIS_LIBRARY_KEY: the same books and the same key give the same files, so
       # only the files not yet in library/ here are new.
-      - name: Build and check the library APK and its library
+      - name: Build and check the APK and its library
         id: library
         working-directory: src
         env:
@@ -272,13 +204,17 @@ jobs:
           ASITIS_SIGNING_STORE_PASSWORD: ${{ secrets.ASITIS_KEYSTORE_PASSWORD }}
           ASITIS_SIGNING_KEY_ALIAS: ${{ secrets.ASITIS_KEY_ALIAS }}
           ASITIS_SIGNING_KEY_PASSWORD: ${{ secrets.ASITIS_KEY_PASSWORD }}
+          # the books are sealed with the server-held key (only this step sees it; never in the APK,
+          # the check below fails the build if it is)
+          ASITIS_LIBRARY_KEY: ${{ secrets.ASITIS_LIBRARY_KEY }}
         run: |
           set -euo pipefail
           echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
           export ASITIS_SIGNING_STORE_FILE="$RUNNER_TEMP/release.jks"
           ./gradlew assembleRelease -Pasitis.apkType=library >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; echo "::error::The library build failed"; exit 1; }
           rm -f "$RUNNER_TEMP/release.jks"
-          A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}-withoutLib.apk"
+          mkdir -p "$GITHUB_WORKSPACE/upload"
+          A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}.apk"
           cp app/build/outputs/apk/release/app-release.apk "$A"
           LIB=app/build/asitis/library/release
           bash .github/scripts/check_apk_type.sh "$A" library app/build/asitis/plain/release true "${{ steps.version.outputs.name }}" "${{ steps.version.outputs.code }}" "$LIB"
@@ -292,13 +228,20 @@ jobs:
             fi
           done
           cp "$LIB/library.json" "$NEW/"
+          # library/'s files this build does not list (an earlier key's): removed when published
+          stale=0
+          for f in "$GITHUB_WORKSPACE"/releases/library/*.sealed; do
+            [ -e "$f" ] || continue
+            [ -f "$LIB/$(basename "$f")" ] || stale=$((stale + 1))
+          done
+          echo "stale=$stale" >> "$GITHUB_OUTPUT"
           cmp -s "$LIB/library.json" "$GITHUB_WORKSPACE/releases/library/library.json" && changed=false || changed=true
           echo "missing=$missing" >> "$GITHUB_OUTPUT"
           echo "changed=$changed" >> "$GITHUB_OUTPUT"
           echo "mb=$(( ($(cat "$LIB"/*.sealed | wc -c) + 500000) / 1000000 ))" >> "$GITHUB_OUTPUT"
-          echo "Library: $total files, $missing not yet in library/ here; library.json changed: $changed" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "Library: $total files, $missing not yet in library/ here, $stale there no longer listed; library.json changed: $changed" | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: The APKs' SHA-256 (for update.json)
+      - name: The APK's SHA-256 (for update.json)
         run: |
           cd upload
           { echo; echo '| APK | Bytes | SHA-256 |'; echo '|---|---|---|'
@@ -320,10 +263,10 @@ jobs:
               }
             }
 
-      - name: Upload the four signed APKs
+      - name: Upload the signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: AsItIs-v${{ steps.version.outputs.name }}-APKs
+          name: AsItIs-v${{ steps.version.outputs.name }}-APK
           path: upload/*.apk
           if-no-files-found: error
           compression-level: 0
@@ -332,7 +275,7 @@ jobs:
       # The library's files are encrypted (the same as those published in library/); uploaded only
       # when some are new and they are not being published here at once.
       - name: Upload the library's new files
-        if: "!inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true')"
+        if: "!inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true' || steps.library.outputs.stale != '0')"
         uses: actions/upload-artifact@v4
         with:
           name: AsItIs-library
@@ -341,10 +284,11 @@ jobs:
           compression-level: 0
           retention-days: 14
 
-      # New files are added beside the old ones (never deleted: phones with an older app may still
-      # fetch them); then Sync to Cloudflare copies library/ to library.asitis.cc.
-      - name: Publish the library's new files in library/
-        if: inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true')
+      # The new files are added and the files this build does not list are removed (an earlier key's:
+      # owner's decision, 13 Nov 2026, the earlier APKs are withdrawn); then Sync to Cloudflare makes
+      # library.asitis.cc the same as library/ (copies what differs, removes what library/ has not).
+      - name: Publish the library in library/
+        if: inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true' || steps.library.outputs.stale != '0')
         working-directory: releases
         env:
           GH_TOKEN: ${{ github.token }}
@@ -352,6 +296,13 @@ jobs:
         run: |
           set -euo pipefail
           cp "$GITHUB_WORKSPACE"/library-new/library/* library/
+          LIB="$GITHUB_WORKSPACE/src/app/build/asitis/library/release"
+          for f in library/*.sealed; do
+            [ -e "$f" ] || continue
+            [ -f "$LIB/$(basename "$f")" ] || { git rm -q "$f"; echo "removed: $(basename "$f")"; }
+          done
+          # every file listed is here and is the build's
+          for f in "$LIB"/*.sealed; do cmp -s "$f" "library/$(basename "$f")" || { echo "::error::$(basename "$f") is not in library/ as built"; exit 1; }; done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add library
@@ -360,7 +311,7 @@ jobs:
           gh workflow run sync-to-cloudflare.yml --ref main
           echo "Library published in library/; Sync to Cloudflare started" | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Make a draft release with the APKs
+      - name: Make a draft release with the APK
         if: inputs.release_tag != ''
         working-directory: releases
         env:
@@ -371,58 +322,17 @@ jobs:
           if gh release view "$TAG" > /dev/null 2>&1; then echo "::error::A release '$TAG' already exists"; exit 1; fi
           V="${{ steps.version.outputs.name }}"
           U="$GITHUB_WORKSPACE/upload"
-          mb() { echo $(( ($(stat -c %s "$U/AsItIs-v$V-$1.apk") + 500000) / 1000000 )); }
-          W=$(mb withoutLib); A=$(mb Universal); C=$(mb compressed-universal); L=$(mb legacy-release); B="${{ steps.library.outputs.mb }}"
-          # (the owner's release page, as for 1.0: which file to download)
+          W=$(( ($(stat -c %s "$U/AsItIs-v$V.apk") + 500000) / 1000000 )); B="${{ steps.library.outputs.mb }}"
           cat > "$RUNNER_TEMP/notes.md" <<EOF
-          ## 📥 Which file should I download?
+          ## 📥 Download
 
-          All four files are **the same As It Is app**, with the same books and the same features. They differ only in **size**, **which phones they run on**, and **whether the books come inside the app or are downloaded once**. *Install only one of them.*
+          **\`AsItIs-v$V.apk\`** · $W MB — the one file, for **every phone** (ARM and Intel).
 
-          ### 🌐 \`AsItIs-v$V-withoutLib.apk\` · $W MB · *Recommended for sharing*
+          - On its **first start** the app downloads Śrīla Prabhupāda's original books library **once** (about **$B MB**, *Wi-Fi recommended*), then works **fully offline**.
+          - Needs **Android 7.0 or newer**, on a phone whose system has not been changed (**not rooted**, bootloader locked): the books are given only to such phones.
+          - The dictionary (*Define*) is built in. *Translate (English → Hindi) downloads its language pack once, the first time you use it.*
 
-          The **smallest** file, easy to send on WhatsApp or Telegram. The books are **not inside** the app: on its **first start** it downloads Śrīla Prabhupāda's original books library **once** (about **$B MB**), then works **fully offline**.
-
-          - Runs on **Android 6.0 and newer**, on **every phone** (ARM and Intel)
-          - Needs internet **only once**, for that first download (*Wi-Fi recommended*)
-          - The dictionary (*Define*) is built in
-
-          ### 📚 \`AsItIs-v$V-Universal.apk\` · $A MB · *The complete app*
-
-          **Everything inside**: all the books come with the app, so it works **offline from the very first moment**, no download needed.
-
-          - Runs on **Android 8.0 and newer**, on **every phone** (ARM and Intel)
-          - Best when you have the file already and do not want any download inside the app
-
-          ### 🗜️ \`AsItIs-v$V-compressed-universal.apk\` · $C MB · *Smaller, books inside*
-
-          The **same complete app**, about **40% smaller**: the books are packed tighter, and only the processors used by phones are included.
-
-          - Runs on **Android 8.0 and newer**, on **ARM phones** (*nearly every Android phone*)
-          - *Does not run* on the rare Intel-based devices: use **Universal** or **withoutLib** there
-
-          ### 📱 \`AsItIs-v$V-legacy-release.apk\` · $L MB · *For older phones*
-
-          The compressed app made for **older phones**, with all the books inside.
-
-          - Runs on **Android 6.0 and 7.x** (and newer), on **ARM phones**
-          - Choose this if your phone is old and you want the books **without any download**
-
-          ---
-
-          ## 🧭 Quick guide
-
-          | File | Size | Android | Books | Internet |
-          |---|---|---|---|---|
-          | withoutLib | $W MB | 6.0+ | downloaded once ($B MB) | once, at first start |
-          | Universal | $A MB | 8.0+ | inside the app | not needed |
-          | compressed-universal | $C MB | 8.0+ | inside the app | not needed |
-          | legacy-release | $L MB | 6.0+ | inside the app | not needed |
-
-          > **Not sure?** Take \`withoutLib\`: it is the smallest and runs on every phone from Android 6.0.
-          > *If your phone shows "App not installed", try \`legacy-release\` (older Android) or \`Universal\` (Intel devices).*
-
-          *Translate (English → Hindi) downloads its language pack once, the first time you use it, in every version.*
+          > If an earlier As It Is is installed, **uninstall it first**, then install this one.
           EOF
           gh release create "$TAG" --draft --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
-          echo "Draft release $TAG made (publish it from Releases)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "Draft release $TAG made (publish it from Releases: Sync to Cloudflare then copies the APK to app.asitis.cc/apk/)" | tee -a "$GITHUB_STEP_SUMMARY"
