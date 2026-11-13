@@ -217,6 +217,8 @@ jobs:
           A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}.apk"
           cp app/build/outputs/apk/release/app-release.apk "$A"
           LIB=app/build/asitis/library/release
+          # (the check opens every sealed file with the build's keys: Python's cryptography package)
+          python3 -m venv "$RUNNER_TEMP/m4" && "$RUNNER_TEMP/m4/bin/pip" install --quiet cryptography
           bash .github/scripts/check_apk_type.sh "$A" library app/build/asitis/plain/release true "${{ steps.version.outputs.name }}" "${{ steps.version.outputs.code }}" "$LIB"
           NEW="$GITHUB_WORKSPACE/library-new/library"
           mkdir -p "$NEW"
