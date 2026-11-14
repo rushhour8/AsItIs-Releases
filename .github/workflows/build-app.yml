@@ -321,7 +321,16 @@ jobs:
           SRC_SHA: ${{ steps.version.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view "$TAG" > /dev/null 2>&1; then echo "::error::A release '$TAG' already exists"; exit 1; fi
+          # a DRAFT under this tag (an earlier build not yet published) is replaced by this build's;
+          # a published release is never touched
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            if [ "$(gh release view "$TAG" --json isDraft -q .isDraft)" = "true" ]; then
+              gh release delete "$TAG" --yes
+              echo "The earlier draft $TAG was replaced by this build's" | tee -a "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::error::A published release '$TAG' already exists"; exit 1
+            fi
+          fi
           V="${{ steps.version.outputs.name }}"
           U="$GITHUB_WORKSPACE/upload"
           W=$(( ($(stat -c %s "$U/AsItIs-v$V.apk") + 500000) / 1000000 )); B="${{ steps.library.outputs.mb }}"
