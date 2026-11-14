@@ -15,7 +15,7 @@
 {
   # 1) POPUP: a message with one button (OK) that closes it.
   "popup": {
-    "on": true,
+    "on": false,
     "force": false,
     "title": "Hare Krishna",
     "message": "Write your message here.",
