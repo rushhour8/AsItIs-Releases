@@ -25,8 +25,8 @@
   # 2) MAIL: a message whose button opens the reader's email app,
   #    already addressed to "to", with the subject and first lines written.
   "mail": {
-    "on": false,
-    "force": false,
+    "on": true,
+    "force": true,
     "title": "Your feedback",
     "message": "How do you find As It Is? Please write to us.",
     "button": "Write to us",
