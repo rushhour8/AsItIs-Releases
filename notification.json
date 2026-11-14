@@ -46,7 +46,7 @@
 
   # 3) SHARE: a message whose button shares the app (the text in share.json).
   "share": {
-    "on": true,
+    "on": false,
     "force": false,
     "showTimes": 1,
     "title": "Share As It Is",
