@@ -15,7 +15,7 @@
 {
   # 1) POPUP: a message with one button (OK) that closes it.
   "popup": {
-    "on": false,
+    "on": true,
     "force": false,
     "title": "Hare Krishna",
     "message": "Write your message here.",
@@ -37,7 +37,7 @@
 
   # 3) SHARE: a message whose button shares the app (the text in share.json).
   "share": {
-    "on": false,
+    "on": true,
     "force": false,
     "title": "Share As It Is",
     "message": "Please share As It Is with at least one other devotee.",
