@@ -1,7 +1,7 @@
 {
   "format": 1,
   "about": "As It Is: the library the library APK downloads (sealed: compressed, then AES-256-GCM encrypted). Files are never changed once published; a changed book is a new file.",
-  "totalSize": 77695940,
+  "totalSize": 78064792,
   "files": [
     {"name": "bg.db", "file": "bg.3f6f844cb5f562bf.sealed", "size": 923952, "sha256": "3f6f844cb5f562bfdc30e07c0b696f20abc4c4e8af71acebe860a42d517858ed", "contentSha256": "153206d15cdcd65527df87b0b1a5f71beac04084b7448dab0a9764bfc174b8e4", "installedSize": 3371008},
     {"name": "krsna.db", "file": "krsna.3aadd6dcd378d4de.sealed", "size": 970524, "sha256": "3aadd6dcd378d4ded26067500ae82c31d4d4a0b6aa99f3d04835a3934c0a84b6", "contentSha256": "411e24204f77ff82a4ad4aae13e4cb1c86b659262e05cad69f27fed97fb5ab58", "installedSize": 3104768},
@@ -55,7 +55,7 @@
     {"name": "witd.db", "file": "witd.d46ff86eeefc68e3.sealed", "size": 357028, "sha256": "d46ff86eeefc68e3efacbeebd10f048f2b666a9f6bc081ca2cd4e430648790cc", "contentSha256": "fa1ea1b9f6f0fc8d2381ee869c6e91d19beca7760706c2809c2f0e914bdf3956", "installedSize": 1167360},
     {"name": "jaladuta.db", "file": "jaladuta.e2e61ccdf8674796.sealed", "size": 74452, "sha256": "e2e61ccdf86747965534e7efa1401a3f64c240634d7fd81ed54df598c4f22ac8", "contentSha256": "b6397b8f8f10fddf8fc48b55df8a547cbdf4141620ce2d8f4cbae43712524374", "installedSize": 270336},
     {"name": "letters.db", "file": "letters.5d699baddb30afca.sealed", "size": 6631468, "sha256": "5d699baddb30afcad4c891df2b740ac7b7b31e458304e06b174718581bdcc748", "contentSha256": "2df8636a6a0411c788450b50cd9dc4d4b4d43072e958c2d9e322f1efdfe768d7", "installedSize": 25051136},
-    {"name": "conversations.db", "file": "conversations.8fc26d9457263e22.sealed", "size": 17741344, "sha256": "8fc26d9457263e22a355aeb4a9dd8a45cc8e3c6d4defaeca2cce766fc97dbf50", "contentSha256": "49e678dc68d9cf85e5730ec3bbfc23a64a98aba3cb5953b800111bc1b902177b", "installedSize": 56229888},
-    {"name": "lectures.db", "file": "lectures.e36149a402622483.sealed", "size": 28149320, "sha256": "e36149a40262248329249194e96c274a419fc8346ee32a05ae24df8c7aa25bcd", "contentSha256": "ee10f26bd80671a8346dc663542d6647d51c919e61ce4787da09a6baeeae7bae", "installedSize": 94212096}
+    {"name": "conversations.db", "file": "conversations.65a7ace3cf2a7923.sealed", "size": 17855020, "sha256": "65a7ace3cf2a7923a2a911e45dcec45282d63dac2be41a0c1d1d981588009102", "contentSha256": "d1c597d4aa5506832e6eaf972bea016be8eddedd31f729040f894e94e77973f7", "installedSize": 56582144},
+    {"name": "lectures.db", "file": "lectures.8cd72abc19731ab5.sealed", "size": 28404496, "sha256": "8cd72abc19731ab52a837f540a2ef3b9f43713070c21cd449d11e1d22109d603", "contentSha256": "dff1dad6e9fb501861df00aa2f483c3f45a8bd351c2595f6418694159085299a", "installedSize": 95109120}
   ]
 }
