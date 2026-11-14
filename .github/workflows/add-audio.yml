@@ -1,0 +1,49 @@
+# Adds recordings to media.asitis.cc (Cloudflare R2 bucket prabhupada-media), owner's request
+# (14 Nov 2026): the recordings missing from the app, mainly from Vanisource (credited), kept on our
+# own server. The list is the app's: app/talks/media-additions.json in rushhour8/AsItIs (made by
+# app/talks/vanisource_additions.py), each file with the talk it is for and why.
+#
+# Only adds: a file already in the bucket is never overwritten or removed; only Vanisource's and
+# Vedabase's addresses, only audio/<year>/<name>.mp3; each file checked to be an MP3, then read back.
+# Run by hand: Actions > Add audio to Cloudflare > Run workflow.
+name: Add audio to Cloudflare
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag or commit of rushhour8/AsItIs whose app/talks/media-additions.json to use"
+        required: true
+        default: ccr-2d817098-0vdldh
+
+permissions:
+  contents: read
+
+concurrency:
+  group: add-audio
+  cancel-in-progress: false
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: The list (rushhour8/AsItIs)
+        uses: actions/checkout@v4
+        with:
+          repository: rushhour8/AsItIs
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.ASITIS_SOURCE_TOKEN }}
+          path: src
+          sparse-checkout: app/talks
+          persist-credentials: false
+
+      - name: Add the recordings
+        run: python3 -I .github/scripts/add_audio.py src/app/talks/media-additions.json

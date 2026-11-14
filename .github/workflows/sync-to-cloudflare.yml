@@ -8,7 +8,8 @@
 #   the published release's APK                               ->  bucket asitis-app, apk/ (https://app.asitis.cc/apk/)
 #
 # Runs on each push to main that changes one of them, when a release is published (its APK), and by
-# hand (Actions > Sync to Cloudflare > Run workflow). Everything goes through Cloudflare's API
+# hand (Actions > Sync to Cloudflare > Run workflow; with a release tag, that release's APK too: Build
+# the app starts it so when it publishes a release itself). Everything goes through Cloudflare's API
 # (.github/scripts/sync_r2.py): a file is copied only when R2 has not the same bytes, read back and
 # compared; R2's sealed files that library/ no longer has are removed (an earlier key's), and on a
 # release every other APK under apk/. It never reads the public addresses, so it works while the
@@ -31,6 +32,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Also copy this published release's APK to app.asitis.cc/apk/ (empty: none)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -54,12 +60,13 @@ jobs:
           persist-credentials: false
 
       - name: The published release's APK
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || inputs.release_tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
+          [[ "$TAG" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "::error::The release tag may only have letters, digits, '.', '_' and '-'"; exit 1; }
           mkdir -p "$RUNNER_TEMP/apk"
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --dir "$RUNNER_TEMP/apk"
           ls -l "$RUNNER_TEMP/apk"

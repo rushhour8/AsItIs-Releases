@@ -48,6 +48,10 @@ on:
         description: "Also make a draft release with the APK under this tag (empty: no release)"
         required: false
         default: ""
+      publish_release:
+        description: "Publish that release at once (not a draft): update.json set to its APK, the APK copied to app.asitis.cc/apk/"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -313,7 +317,7 @@ jobs:
           gh workflow run sync-to-cloudflare.yml --ref main
           echo "Library published in library/; Sync to Cloudflare started" | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Make a draft release with the APK
+      - name: Make the release with the APK (a draft, or published when asked)
         if: inputs.release_tag != ''
         working-directory: releases
         env:
@@ -345,5 +349,29 @@ jobs:
 
           > If an earlier As It Is is installed, **uninstall it first**, then install this one.
           EOF
-          gh release create "$TAG" --draft --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
-          echo "Draft release $TAG made (publish it from Releases: Sync to Cloudflare then copies the APK to app.asitis.cc/apk/)" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "${{ inputs.publish_release }}" != "true" ]; then
+            gh release create "$TAG" --draft --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
+            echo "Draft release $TAG made (publish it from Releases: Sync to Cloudflare then copies the APK to app.asitis.cc/apk/)" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          # published at once (owner's request, 14 Nov 2026): the release, then update.json set to its
+          # APK (version, links, SHA-256, size; the notes and "mandatory" stay as the owner wrote them),
+          # then Sync to Cloudflare (a release made by this workflow does not start it by itself): the
+          # APK to app.asitis.cc/apk/, update.json and the library to Cloudflare
+          gh release create "$TAG" --latest --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
+          A="$U/AsItIs-v$V.apk"
+          python3 -I "$GITHUB_WORKSPACE/releases/.github/scripts/set_update_json.py" update.json \
+            --code "${{ steps.version.outputs.code }}" --name "$V" \
+            --primary "https://app.asitis.cc/apk/AsItIs-v$V.apk" \
+            --secondary "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/AsItIs-v$V.apk" \
+            --sha256 "$(sha256sum "$A" | cut -d' ' -f1)" --size "$(stat -c %s "$A")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- update.json; then
+            git add update.json
+            git commit -q -m "update.json: $V published (its APK's SHA-256 and size)"
+            git pull -q --rebase origin main
+            git push -q origin HEAD:main
+          fi
+          gh workflow run sync-to-cloudflare.yml --ref main -f release_tag="$TAG"
+          echo "Release $TAG published; update.json set to its APK; Sync to Cloudflare started (the APK to app.asitis.cc/apk/)" | tee -a "$GITHUB_STEP_SUMMARY"
