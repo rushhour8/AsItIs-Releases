@@ -32,8 +32,8 @@
 
   # (Recommended) the APK's SHA-256: every download is checked against it, so a
   # wrong or changed file is never installed. Leave "" to skip the check.
-  "sha256": "d4f1fac713b2abd4b428cc10a31d4d76537448718033ac9beec4c7fdb695a4a3",
+  "sha256": "28fc032f7b3cb58f8e4a63222c60f3887be101f579a7e69e66845c5de692a043",
 
   # (Optional) the APK's size in bytes, for the progress bar.
-  "sizeBytes": 51198002
+  "sizeBytes": 51277098
 }
