@@ -4,12 +4,19 @@
 #
 #  There are three kinds below: POPUP, MAIL and SHARE.
 #  - To show one, set its "on" to true (and the others to false).
-#  - If more than one is on, the FIRST one from the top is shown.
-#  - A message pops up once. If you change its title, message or button,
-#    it is a new message and pops up again.
+#  - If more than one is on, the FIRST one from the top is shown
+#    (1, 2 and 3 on: 1 is shown; 2 and 3 on: 2 is shown; only 3 on: 3).
+#  - "showTimes": how many times the message pops up for each reader, at
+#    different app starts (one a start):  1 = once,  4 = four times.
+#    If you raise it later (1 -> 4) for the same message, it pops up the
+#    times still left. (Not given: 1.)
+#  - If you change its title, message or button, it is a new message and
+#    pops up again from the start.
 #  - "force": true  -> it cannot be closed (no X, no Back, no tap outside)
-#    until its button is pressed; it comes back at every start until then.
-#  - Every message shown also stays 7 days in the side panel (Notifications).
+#    until its button is pressed; it comes back at every start until then
+#    (showTimes is not used then).
+#  - Every message shown also stays 7 days in the side panel (Notifications),
+#    ONCE, however many times it popped up.
 #  - Write \n inside a text for a new line.
 # ==============================================================================
 {
@@ -17,6 +24,7 @@
   "popup": {
     "on": false,
     "force": false,
+    "showTimes": 1,
     "title": "Hare Krishna",
     "message": "Write your message here.",
     "button": "OK"
@@ -27,6 +35,7 @@
   "mail": {
     "on": false,
     "force": true,
+    "showTimes": 1,
     "title": "Your feedback",
     "message": "How do you find As It Is? Please write to us.",
     "button": "Write to us",
@@ -39,6 +48,7 @@
   "share": {
     "on": true,
     "force": false,
+    "showTimes": 1,
     "title": "Share As It Is",
     "message": "Please share As It Is with at least one other devotee.",
     "button": "Share"
