@@ -15,7 +15,7 @@
 {
   # 1) POPUP: a message with one button (OK) that closes it.
   "popup": {
-    "on": true,
+    "on": false,
     "force": false,
     "title": "Hare Krishna",
     "message": "Write your message here.",
@@ -25,7 +25,7 @@
   # 2) MAIL: a message whose button opens the reader's email app,
   #    already addressed to "to", with the subject and first lines written.
   "mail": {
-    "on": true,
+    "on": false,
     "force": true,
     "title": "Your feedback",
     "message": "How do you find As It Is? Please write to us.",
