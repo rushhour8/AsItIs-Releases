@@ -1,0 +1,38 @@
+# Writes a published release's notes again from .github/release-notes.md (its version, the APK's size
+# and the library's filled in), without building anything: Actions > Release notes > Run workflow.
+name: Release notes
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The release's tag (e.g. v1.0)"
+        required: true
+        default: v1.0
+
+permissions:
+  contents: write
+
+jobs:
+  notes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: The notes, written again
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9A-Za-z.-]+$ ]] || { echo "::error::The tag must look like v1.0"; exit 1; }
+          V="${TAG#v}"
+          BYTES=$(gh release view "$TAG" --json assets -q '.assets[] | select(.name | endswith(".apk")) | .size' | head -1)
+          [ -n "$BYTES" ] || { echo "::error::$TAG has no APK"; exit 1; }
+          W=$(( (BYTES + 500000) / 1000000 ))
+          B=$(( ($(cat library/*.sealed | wc -c) + 500000) / 1000000 ))
+          python3 -I .github/scripts/release_notes.py .github/release-notes.md "$V" "$W" "$B" > "$RUNNER_TEMP/notes.md"
+          gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
+          echo "The notes of $TAG written again (APK $W MB, library $B MB)" | tee -a "$GITHUB_STEP_SUMMARY"

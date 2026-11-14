@@ -339,17 +339,8 @@ jobs:
           V="${{ steps.version.outputs.name }}"
           U="$GITHUB_WORKSPACE/upload"
           W=$(( ($(stat -c %s "$U/AsItIs-v$V.apk") + 500000) / 1000000 )); B="${{ steps.library.outputs.mb }}"
-          cat > "$RUNNER_TEMP/notes.md" <<EOF
-          ## 📥 Download
-
-          **\`AsItIs-v$V.apk\`** · $W MB — the one file, for **every phone** (ARM and Intel).
-
-          - On its **first start** the app downloads Śrīla Prabhupāda's original books library **once** (about **$B MB**, *Wi-Fi recommended*), then works **fully offline**.
-          - Needs **Android 7.0 or newer**, on a phone whose system has not been changed (**not rooted**, bootloader locked): the books are given only to such phones.
-          - The dictionary (*Define*) is built in. *Translate (English → Hindi) downloads its language pack once, the first time you use it.*
-
-          > If an earlier As It Is is installed, **uninstall it first**, then install this one.
-          EOF
+          # the notes: .github/release-notes.md, its {{VERSION}}, {{APK_MB}} and {{LIBRARY_MB}} filled in
+          python3 -I "$GITHUB_WORKSPACE/releases/.github/scripts/release_notes.py" "$GITHUB_WORKSPACE/releases/.github/release-notes.md" "$V" "$W" "$B" > "$RUNNER_TEMP/notes.md"
           if [ "${{ inputs.publish_release }}" != "true" ]; then
             gh release create "$TAG" --draft --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
             echo "Draft release $TAG made (publish it from Releases: Sync to Cloudflare then copies the APK to app.asitis.cc/apk/)" | tee -a "$GITHUB_STEP_SUMMARY"
