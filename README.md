@@ -101,5 +101,5 @@ These files are read by the installed app. Please do not rename or delete them.
 | `library/` | The books the app downloads on its first start (encrypted; also served from https://library.asitis.cc/, which the app tries first) |
 
 <div align="center">
-<sub>Contact: <a href="mailto:support@asitis.cc">support@asitis.cc</a></sub>
+<sub>Contact: <a href="mailto:asitis@outlook.in">asitis@outlook.in</a></sub>
 </div>
