@@ -6,6 +6,7 @@
 #   update.json, share.json, notification.json, policy.json  ->  bucket asitis-app      (https://app.asitis.cc/)
 #   library/*.sealed, library/library.json                    ->  bucket asitis-library  (https://library.asitis.cc/)
 #   the published release's APK                               ->  bucket asitis-app, apk/ (https://app.asitis.cc/apk/)
+#   media/ (the recordings', letters' originals' and Music lists) ->  bucket prabhupada-media (https://media.asitis.cc/)
 #
 # Runs on each push to main that changes one of them, when a release is published (its APK), and by
 # hand (Actions > Sync to Cloudflare > Run workflow; with a release tag, that release's APK too: Build
@@ -29,6 +30,7 @@ on:
       - notification.json
       - policy.json
       - library/**
+      - media/**
   release:
     types: [published]
   workflow_dispatch:
@@ -80,3 +82,6 @@ jobs:
             for f in "$RUNNER_TEMP"/apk/*.apk; do [ -e "$f" ] && args+=(--apk "$f"); done
           fi
           python3 -I .github/scripts/sync_r2.py "${args[@]}"
+
+      - name: The media lists (recordings, letters' originals, Music)
+        run: python3 -I .github/scripts/sync_media_lists.py

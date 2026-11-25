@@ -1,0 +1,69 @@
+# Publishes the books by itself when their databases change in the app's repository (owner's
+# request, 25 Nov 2026: an edit on GitHub reaches Cloudflare with nothing more to do).
+#
+# Every 3 hours (and by hand: Actions > Publish books when changed > Run workflow) it looks at the
+# app's branch in rushhour8/AsItIs (the repository variable APP_BRANCH, else ccr-2d817098-0vdldh):
+# if a book's or archive's database (assets/**/*.db) changed since the build library/ was last made
+# from (named in library/'s last commit, "library: files from the build of AsItIs <commit>"), it
+# starts Build the app for that commit with the library published (the earlier files removed), no
+# release and no tests: the books are sealed, put in library/ and copied to Cloudflare; phones are
+# offered the changed books (Books update). Nothing changed: it does nothing.
+name: Publish books when changed
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: publish-books-when-changed
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          persist-credentials: false
+
+      - name: The app's branch (rushhour8/AsItIs)
+        uses: actions/checkout@v4
+        with:
+          repository: rushhour8/AsItIs
+          ref: ${{ vars.APP_BRANCH || 'ccr-2d817098-0vdldh' }}
+          token: ${{ secrets.ASITIS_SOURCE_TOKEN }}
+          path: src
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+
+      - name: Changed books? Then build and publish them
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          head=$(git -C src rev-parse HEAD)
+          built=$(git log -1 --format=%s -- library/ | sed -n 's/^library: files from the build of AsItIs \([0-9a-f]\{7,40\}\).*$/\1/p')
+          if [ -z "$built" ]; then echo "::warning::library/'s last build is not named; nothing done"; exit 0; fi
+          if ! git -C src cat-file -e "$built^{commit}" 2>/dev/null; then echo "::warning::$built is not on the branch; nothing done"; exit 0; fi
+          changed=$(git -C src diff --name-only "$built" "$head" -- 'assets' | grep -i '\.db$' || true)
+          if [ -z "$changed" ]; then echo "No book changed since $built."; exit 0; fi
+          echo "Changed since $built:"; echo "$changed"
+          # (a build already running or waiting: it is left to finish)
+          if gh run list --workflow build-app.yml --repo "$GITHUB_REPOSITORY" --json status --jq '.[] | select(.status != "completed")' | grep -q .; then
+            echo "A build is running: the next check publishes."; exit 0
+          fi
+          gh workflow run build-app.yml --repo "$GITHUB_REPOSITORY" --ref main \
+            -f ref="$head" -f tests=false -f publish_library=true -f remove_old_library_files=true -f release_tag= -f publish_release=false
+          {
+            echo "### Books changed: publishing";
+            echo "Build the app started for $head (library published, earlier files removed, no release).";
+            echo; echo '```'; echo "$changed"; echo '```';
+          } >> "$GITHUB_STEP_SUMMARY"

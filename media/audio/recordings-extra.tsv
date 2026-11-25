@@ -1,0 +1,6 @@
+# Talks' recordings added or changed on R2 after the app was made (the app reads this quietly).
+# One talk a line: its code (as the lists show it) or entry id, a TAB, then its file(s) in the
+# media bucket ("audio/<year>/<name>.mp3"; two files: "|" between them). "-" alone takes a
+# recording away. A line starting with # is a note. Upload the MP3 to prabhupada-media first.
+# Example (remove the # to use it):
+# 680502LE	audio/1968/680502LE-BOSTON.mp3

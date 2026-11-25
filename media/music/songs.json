@@ -1,0 +1,1151 @@
+{
+ "version": 1,
+ "updated": "2026-11-25",
+ "note": "Srila Prabhupada singing, from vedabase.cc/music (every take once; same recordings under two names kept once). The app's Music list; play from media.asitis.cc.",
+ "songs": [
+  {
+   "id": "1896",
+   "title": "Amara Jivana",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 655,
+   "file": "music/1896_Amara_Jivana.mp3"
+  },
+  {
+   "id": "1897",
+   "title": "Amara Jivana — Purport",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 313,
+   "file": "music/1897_Amara_Jivana_-_Purport.mp3"
+  },
+  {
+   "id": "1900",
+   "title": "Anadi Karama-phale (Take 1)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 993,
+   "file": "music/1900_Anadi_Karama_Phale_2.mp3"
+  },
+  {
+   "id": "1901",
+   "title": "Anadi Karama-phale (Take 2)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 320,
+   "file": "music/1901_Anadi_Karama_Phale_3.mp3"
+  },
+  {
+   "id": "1899",
+   "title": "Anadi Karama-phale — Purport",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 323,
+   "file": "music/1899_Anadi_karama_Phale_-_Purport.mp3"
+  },
+  {
+   "id": "1918",
+   "title": "Bhaja Bhakata Vatsala (Take 1)",
+   "subtitle": "Bhoga-arati",
+   "kind": "song",
+   "seconds": 778,
+   "file": "music/1918_Bhoga_Arati_1.mp3"
+  },
+  {
+   "id": "1920",
+   "title": "Bhaja Bhakata Vatsala (Take 2)",
+   "subtitle": "Bhoga-arati",
+   "kind": "song",
+   "seconds": 723,
+   "file": "music/1920_Bhoga_Arati_3.mp3"
+  },
+  {
+   "id": "1921",
+   "title": "Bhaja Bhakata Vatsala (Take 3)",
+   "subtitle": "Bhoga-arati",
+   "kind": "song",
+   "seconds": 514,
+   "file": "music/1921_Bhoga_Arati_4.mp3"
+  },
+  {
+   "id": "1922",
+   "title": "Bhaja Bhakata Vatsala (Take 4)",
+   "subtitle": "Bhoga-arati",
+   "kind": "song",
+   "seconds": 912,
+   "file": "music/1922_Bhoga_Arati_5.mp3"
+  },
+  {
+   "id": "2029",
+   "title": "Bhaja Sri Krsna Caitanya (Take 1)",
+   "subtitle": "Kirtana",
+   "kind": "song",
+   "seconds": 717,
+   "file": "music/2029_Sri_Krishna_Chaitanya_Prabhu_1.mp3"
+  },
+  {
+   "id": "2031",
+   "title": "Bhaja Sri Krsna Caitanya (Take 2)",
+   "subtitle": "Kirtana",
+   "kind": "song",
+   "seconds": 941,
+   "file": "music/2031_Sri_Krishna_Chaitanya_Prabhu_2.mp3"
+  },
+  {
+   "id": "2032",
+   "title": "Bhaja Sri Krsna Caitanya (Take 3)",
+   "subtitle": "Kirtana",
+   "kind": "song",
+   "seconds": 460,
+   "file": "music/2032_Sri_Krishna_Chaitanya_Prabhu_3.mp3"
+  },
+  {
+   "id": "2033",
+   "title": "Bhaja Sri Krsna Caitanya (Take 4)",
+   "subtitle": "Kirtana",
+   "kind": "song",
+   "seconds": 1155,
+   "file": "music/2033_Sri_Krishna_Chaitanya_Prabhu_4.mp3"
+  },
+  {
+   "id": "2030",
+   "title": "Bhaja Sri Krsna Caitanya — Purport",
+   "subtitle": "Kirtana",
+   "kind": "purport",
+   "seconds": 526,
+   "file": "music/2030_Sri_Krishna_Chaitanya_Prabhu_1_-_Purport.mp3"
+  },
+  {
+   "id": "1907",
+   "title": "Bhajahu Re Mana (Take 1)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 803,
+   "file": "music/1907_Bhajahu_Re_Mana_2.mp3"
+  },
+  {
+   "id": "1909",
+   "title": "Bhajahu Re Mana (Take 2)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1150,
+   "file": "music/1909_Bhajahu_Re_Mana_3.mp3"
+  },
+  {
+   "id": "1911",
+   "title": "Bhajahu Re Mana (Take 3)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 544,
+   "file": "music/1911_Bhajahu_Re_Mana_4.mp3"
+  },
+  {
+   "id": "1905",
+   "title": "Bhajahu Re Mana (Take 4)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1176,
+   "file": "music/1905_Bhajahu_Re_Mana_1.mp3"
+  },
+  {
+   "id": "1914",
+   "title": "Bhajahu Re Mana (Take 5)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1054,
+   "file": "music/1914_Bhajahu_Re_Mana_6.mp3"
+  },
+  {
+   "id": "1915",
+   "title": "Bhajahu Re Mana (Take 6)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 785,
+   "file": "music/1915_Bhajahu_Re_Mana_7.mp3"
+  },
+  {
+   "id": "1916",
+   "title": "Bhajahu Re Mana (Take 7)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 576,
+   "file": "music/1916_Bhajahu_Re_Mana_8.mp3"
+  },
+  {
+   "id": "1906",
+   "title": "Bhajahu Re Mana — Purport (Take 1)",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 910,
+   "file": "music/1906_Bhajahu_Re_Mana_1_-_Purport.mp3"
+  },
+  {
+   "id": "1908",
+   "title": "Bhajahu Re Mana — Purport (Take 2)",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 533,
+   "file": "music/1908_Bhajahu_Re_Mana_2_-_Purport.mp3"
+  },
+  {
+   "id": "1910",
+   "title": "Bhajahu Re Mana — Purport (Take 3)",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 1120,
+   "file": "music/1910_Bhajahu_Re_Mana_3_-_Purport.mp3"
+  },
+  {
+   "id": "1912",
+   "title": "Bhajahu Re Mana — Purport (Take 4)",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 789,
+   "file": "music/1912_Bhajahu_Re_Mana_4_-_Purport.mp3"
+  },
+  {
+   "id": "2057",
+   "title": "Ceto Darpana Marjanam (Take 1)",
+   "subtitle": "Sri Sri Siksastakam",
+   "kind": "song",
+   "seconds": 1176,
+   "file": "music/2057_Sri_Sri_Siksastakam_1.mp3"
+  },
+  {
+   "id": "2059",
+   "title": "Ceto Darpana Marjanam (Take 2)",
+   "subtitle": "Sri Sri Siksastakam",
+   "kind": "song",
+   "seconds": 1103,
+   "file": "music/2059_Sri_Sri_Siksastakam_2.mp3"
+  },
+  {
+   "id": "2061",
+   "title": "Ceto Darpana Marjanam (Take 3)",
+   "subtitle": "Sri Sri Siksastakam",
+   "kind": "song",
+   "seconds": 144,
+   "file": "music/2061_Sri_Sri_Siksastakam_3.mp3"
+  },
+  {
+   "id": "2062",
+   "title": "Ceto Darpana Marjanam (Take 4)",
+   "subtitle": "Sri Sri Siksastakam",
+   "kind": "song",
+   "seconds": 1181,
+   "file": "music/2062_Sri_Sri_Siksastakam_4.mp3"
+  },
+  {
+   "id": "2063",
+   "title": "Ceto Darpana Marjanam (Take 5)",
+   "subtitle": "Sri Sri Siksastakam",
+   "kind": "song",
+   "seconds": 118,
+   "file": "music/2063_Sri_Sri_Siksastakam_5.mp3"
+  },
+  {
+   "id": "2006",
+   "title": "Cintamani (Take 1)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 860,
+   "file": "music/2006_Sri_Brahma_Samhita_1.mp3"
+  },
+  {
+   "id": "2019",
+   "title": "Cintamani (Take 10)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 1244,
+   "file": "music/2019_Sri_Brahma_Samhita_12.mp3"
+  },
+  {
+   "id": "2020",
+   "title": "Cintamani (Take 11)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 522,
+   "file": "music/2020_Sri_Brahma_Samhita_13.mp3"
+  },
+  {
+   "id": "2018",
+   "title": "Cintamani (Take 2)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 94,
+   "file": "music/2018_Sri_Brahma_Samhita_11.mp3"
+  },
+  {
+   "id": "2011",
+   "title": "Cintamani (Take 3)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 1196,
+   "file": "music/2011_Sri_Brahma_Samhita_4.mp3"
+  },
+  {
+   "id": "2012",
+   "title": "Cintamani (Take 4)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 283,
+   "file": "music/2012_Sri_Brahma_Samhita_5.mp3"
+  },
+  {
+   "id": "2013",
+   "title": "Cintamani (Take 5)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 1664,
+   "file": "music/2013_Sri_Brahma_Samhita_6.mp3"
+  },
+  {
+   "id": "2014",
+   "title": "Cintamani (Take 6)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 1040,
+   "file": "music/2014_Sri_Brahma_Samhita_7.mp3"
+  },
+  {
+   "id": "2015",
+   "title": "Cintamani (Take 7)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 865,
+   "file": "music/2015_Sri_Brahma_Samhita_8.mp3"
+  },
+  {
+   "id": "2016",
+   "title": "Cintamani (Take 8)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 938,
+   "file": "music/2016_Sri_Brahma_Samhita_9.mp3"
+  },
+  {
+   "id": "2017",
+   "title": "Cintamani (Take 9)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "song",
+   "seconds": 1524,
+   "file": "music/2017_Sri_Brahma_Samhita_10.mp3"
+  },
+  {
+   "id": "2007",
+   "title": "Cintamani — Purport (Take 1)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "purport",
+   "seconds": 698,
+   "file": "music/2007_Sri_Brahma_Samhita_1_-_Purport.mp3"
+  },
+  {
+   "id": "2009",
+   "title": "Cintamani — Purport (Take 2)",
+   "subtitle": "Sri Brahma-samhita",
+   "kind": "purport",
+   "seconds": 742,
+   "file": "music/2009_Sri_Brahma_Samhita_2_-_Purport.mp3"
+  },
+  {
+   "id": "1925",
+   "title": "Dusta Mane",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1441,
+   "file": "music/1925_Dusta_Mana.mp3"
+  },
+  {
+   "id": "1929",
+   "title": "Gaura Pahu (Take 1)",
+   "subtitle": "Gaura Pahu Na Bhajiya Goinu",
+   "kind": "song",
+   "seconds": 604,
+   "file": "music/1929_Gaura_Pahu_1.mp3"
+  },
+  {
+   "id": "1931",
+   "title": "Gaura Pahu (Take 2)",
+   "subtitle": "Gaura Pahu Na Bhajiya Goinu",
+   "kind": "song",
+   "seconds": 1066,
+   "file": "music/1931_Gaura_Pahu_2.mp3"
+  },
+  {
+   "id": "1930",
+   "title": "Gaura Pahu — Purport",
+   "subtitle": "Gaura Pahu Na Bhajiya Goinu",
+   "kind": "purport",
+   "seconds": 668,
+   "file": "music/1930_Gaura_Pahu_1_-_Purport.mp3"
+  },
+  {
+   "id": "1936",
+   "title": "Gaurangera Duti Pada (Take 1)",
+   "subtitle": "Savarana-Sri-Gaura-Mahima",
+   "kind": "song",
+   "seconds": 1032,
+   "file": "music/1936_Gaurangera_Duti_Pada_1.mp3"
+  },
+  {
+   "id": "1938",
+   "title": "Gaurangera Duti Pada (Take 2)",
+   "subtitle": "Savarana-Sri-Gaura-Mahima",
+   "kind": "song",
+   "seconds": 749,
+   "file": "music/1938_Gaurangera_Duti_Pada_2.mp3"
+  },
+  {
+   "id": "1937",
+   "title": "Gaurangera Duti Pada — Purport",
+   "subtitle": "Savarana-Sri-Gaura-Mahima",
+   "kind": "purport",
+   "seconds": 780,
+   "file": "music/1937_Gaurangera_Duti_Pada_1_-_Purport.mp3"
+  },
+  {
+   "id": "1939",
+   "title": "Govinda Jaya Jaya (Take 1)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 359,
+   "file": "music/1939_Govinda_Jaya_Jaya_1.mp3"
+  },
+  {
+   "id": "1940",
+   "title": "Govinda Jaya Jaya (Take 2)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 230,
+   "file": "music/1940_Govinda_Jaya_Jaya_2.mp3"
+  },
+  {
+   "id": "1941",
+   "title": "Govinda Jaya Jaya (Take 3)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 760,
+   "file": "music/1941_Govinda_Jaya_Jaya_3.mp3"
+  },
+  {
+   "id": "1942",
+   "title": "Govinda Jaya Jaya (Take 4)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 443,
+   "file": "music/1942_Govinda_Jaya_Jaya_4.mp3"
+  },
+  {
+   "id": "1856",
+   "title": "Hare Krishna Maha Mantra (Take 1)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 3823,
+   "file": "music/1856_Hare_Krishna_Kirtan_1_1965_-_At_Dr._Mishra_s_Ashrama_.mp3"
+  },
+  {
+   "id": "1865",
+   "title": "Hare Krishna Maha Mantra (Take 10)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 953,
+   "file": "music/1865_Hare_Krishna_Kirtan_10.mp3"
+  },
+  {
+   "id": "1866",
+   "title": "Hare Krishna Maha Mantra (Take 11)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1107,
+   "file": "music/1866_Hare_Krishna_Kirtan_11.mp3"
+  },
+  {
+   "id": "1867",
+   "title": "Hare Krishna Maha Mantra (Take 12)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 862,
+   "file": "music/1867_Hare_Krishna_Kirtan_12.mp3"
+  },
+  {
+   "id": "1868",
+   "title": "Hare Krishna Maha Mantra (Take 13)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 222,
+   "file": "music/1868_Hare_Krishna_Kirtan_13.mp3"
+  },
+  {
+   "id": "1869",
+   "title": "Hare Krishna Maha Mantra (Take 14)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 336,
+   "file": "music/1869_Hare_Krishna_Kirtan_14.mp3"
+  },
+  {
+   "id": "1870",
+   "title": "Hare Krishna Maha Mantra (Take 15)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 644,
+   "file": "music/1870_Hare_Krishna_Kirtan_15.mp3"
+  },
+  {
+   "id": "1871",
+   "title": "Hare Krishna Maha Mantra (Take 16)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 562,
+   "file": "music/1871_Hare_Krishna_Kirtan_16.mp3"
+  },
+  {
+   "id": "1872",
+   "title": "Hare Krishna Maha Mantra (Take 17)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 138,
+   "file": "music/1872_Hare_Krishna_Kirtan_17.mp3"
+  },
+  {
+   "id": "1873",
+   "title": "Hare Krishna Maha Mantra (Take 18)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 463,
+   "file": "music/1873_Hare_Krishna_Kirtan_18_Chant_Hare_Krsna_Softly_.mp3"
+  },
+  {
+   "id": "1874",
+   "title": "Hare Krishna Maha Mantra (Take 19)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1445,
+   "file": "music/1874_Hare_Krishna_Kirtan_19.mp3"
+  },
+  {
+   "id": "1857",
+   "title": "Hare Krishna Maha Mantra (Take 2)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 450,
+   "file": "music/1857_Hare_Krishna_Kirtan_2.mp3"
+  },
+  {
+   "id": "1875",
+   "title": "Hare Krishna Maha Mantra (Take 20)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 567,
+   "file": "music/1875_Hare_Krishna_Kirtan_20_1969_Boston_1_.mp3"
+  },
+  {
+   "id": "1876",
+   "title": "Hare Krishna Maha Mantra (Take 21)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 277,
+   "file": "music/1876_Hare_Krishna_Kirtan_21_1969_Boston_2_.mp3"
+  },
+  {
+   "id": "1877",
+   "title": "Hare Krishna Maha Mantra (Take 22)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 521,
+   "file": "music/1877_Hare_Krishna_Kirtan_22.mp3"
+  },
+  {
+   "id": "1878",
+   "title": "Hare Krishna Maha Mantra (Take 23)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 384,
+   "file": "music/1878_Hare_Krishna_Kirtan_23.mp3"
+  },
+  {
+   "id": "1879",
+   "title": "Hare Krishna Maha Mantra (Take 24)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 568,
+   "file": "music/1879_Hare_Krishna_Kirtan_24.mp3"
+  },
+  {
+   "id": "1880",
+   "title": "Hare Krishna Maha Mantra (Take 25)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 482,
+   "file": "music/1880_Hare_Krishna_Kirtan_25_Prabhupada_on_Gong_.mp3"
+  },
+  {
+   "id": "1881",
+   "title": "Hare Krishna Maha Mantra (Take 26)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 302,
+   "file": "music/1881_Hare_Krishna_Kirtan_26.mp3"
+  },
+  {
+   "id": "1858",
+   "title": "Hare Krishna Maha Mantra (Take 3)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1535,
+   "file": "music/1858_Hare_Krishna_Kirtan_3.mp3"
+  },
+  {
+   "id": "1859",
+   "title": "Hare Krishna Maha Mantra (Take 4)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 262,
+   "file": "music/1859_Hare_Krishna_Kirtan_4.mp3"
+  },
+  {
+   "id": "1860",
+   "title": "Hare Krishna Maha Mantra (Take 5)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 446,
+   "file": "music/1860_Hare_Krishna_Kirtan_5.mp3"
+  },
+  {
+   "id": "1861",
+   "title": "Hare Krishna Maha Mantra (Take 6)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 305,
+   "file": "music/1861_Hare_Krishna_Kirtan_6.mp3"
+  },
+  {
+   "id": "1862",
+   "title": "Hare Krishna Maha Mantra (Take 7)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 315,
+   "file": "music/1862_Hare_Krishna_Kirtan_7.mp3"
+  },
+  {
+   "id": "1863",
+   "title": "Hare Krishna Maha Mantra (Take 8)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 594,
+   "file": "music/1863_Hare_Krishna_Kirtan_8.mp3"
+  },
+  {
+   "id": "1864",
+   "title": "Hare Krishna Maha Mantra (Take 9)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 942,
+   "file": "music/1864_Hare_Krishna_Kirtan_9.mp3"
+  },
+  {
+   "id": "1966",
+   "title": "Hari Haraye Namah Krsna (Take 1)",
+   "subtitle": "Nama-sankirtana",
+   "kind": "song",
+   "seconds": 1170,
+   "file": "music/1966_Nama_Sankirtana_1.mp3"
+  },
+  {
+   "id": "1967",
+   "title": "Hari Haraye Namah Krsna (Take 2)",
+   "subtitle": "Nama-sankirtana",
+   "kind": "song",
+   "seconds": 1005,
+   "file": "music/1967_Nama_Sankirtana_2.mp3"
+  },
+  {
+   "id": "1945",
+   "title": "Hari Hari Bifale (Take 1)",
+   "subtitle": "Ista-Deve Vijnapti",
+   "kind": "song",
+   "seconds": 840,
+   "file": "music/1945_Hari_Hari_Bifale_1.mp3"
+  },
+  {
+   "id": "1947",
+   "title": "Hari Hari Bifale (Take 2)",
+   "subtitle": "Ista-Deve Vijnapti",
+   "kind": "song",
+   "seconds": 1094,
+   "file": "music/1947_Hari_Hari_Bifale_2.mp3"
+  },
+  {
+   "id": "1948",
+   "title": "Hari Hari Bifale (Take 3)",
+   "subtitle": "Ista-Deve Vijnapti",
+   "kind": "song",
+   "seconds": 395,
+   "file": "music/1948_Hari_Hari_Bifale_3.mp3"
+  },
+  {
+   "id": "1946",
+   "title": "Hari Hari Bifale — Purport",
+   "subtitle": "Ista-Deve Vijnapti",
+   "kind": "purport",
+   "seconds": 396,
+   "file": "music/1946_Hari_Hari_Bifale_1_-_Purport.mp3"
+  },
+  {
+   "id": "2021",
+   "title": "Jaya Jagadisha Hare (Take 1)",
+   "subtitle": "Sri Dasavatara-stotra",
+   "kind": "song",
+   "seconds": 914,
+   "file": "music/2021_Sri_Dasavatara_Stotra_1.mp3"
+  },
+  {
+   "id": "2023",
+   "title": "Jaya Jagadisha Hare (Take 2)",
+   "subtitle": "Sri Dasavatara-stotra",
+   "kind": "song",
+   "seconds": 1406,
+   "file": "music/2023_Sri_Dasavatara_Stotra_2.mp3"
+  },
+  {
+   "id": "2024",
+   "title": "Jaya Jagadisha Hare (Take 3)",
+   "subtitle": "Sri Dasavatara-stotra",
+   "kind": "song",
+   "seconds": 496,
+   "file": "music/2024_Sri_Dasavatara_Stotra_3.mp3"
+  },
+  {
+   "id": "2025",
+   "title": "Jaya Jagadisha Hare (Take 4)",
+   "subtitle": "Sri Dasavatara-stotra",
+   "kind": "song",
+   "seconds": 1333,
+   "file": "music/2025_Sri_Dasavatara_Stotra_4.mp3"
+  },
+  {
+   "id": "2022",
+   "title": "Jaya Jagadisha Hare — Purport",
+   "subtitle": "Sri Dasavatara-stotra",
+   "kind": "purport",
+   "seconds": 1222,
+   "file": "music/2022_Sri_Dasavatara_Stotra_1_-_Purport.mp3"
+  },
+  {
+   "id": "1951",
+   "title": "Jaya Radha-Madhava (Take 1)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 485,
+   "file": "music/1951_Jaya_Radha_Madhava_1.mp3"
+  },
+  {
+   "id": "1953",
+   "title": "Jaya Radha-Madhava (Take 2)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 331,
+   "file": "music/1953_Jaya_Radha_Madhava_2.mp3"
+  },
+  {
+   "id": "1954",
+   "title": "Jaya Radha-Madhava (Take 3)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 273,
+   "file": "music/1954_Jaya_Radha_Madhava_3.mp3"
+  },
+  {
+   "id": "1955",
+   "title": "Jaya Radha-Madhava (Take 4)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 338,
+   "file": "music/1955_Jaya_Radha_Madhava_4.mp3"
+  },
+  {
+   "id": "1952",
+   "title": "Jaya Radha-Madhava — Purport",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 550,
+   "file": "music/1952_Jaya_Radha_Madhava_1_-_Purport.mp3"
+  },
+  {
+   "id": "2064",
+   "title": "Jaya Radhe Jaya Krsna",
+   "subtitle": "Sri Vraja-dhama-mahimamrta",
+   "kind": "song",
+   "seconds": 883,
+   "file": "music/2064_Sri_Vrajadham_Mahimamrita.mp3"
+  },
+  {
+   "id": "1960",
+   "title": "Jiv Jago (Take 1)",
+   "subtitle": "Arunodaya-kirtana II",
+   "kind": "song",
+   "seconds": 754,
+   "file": "music/1960_Jiv_Jago_2.mp3"
+  },
+  {
+   "id": "1961",
+   "title": "Jiv Jago (Take 2)",
+   "subtitle": "Arunodaya-kirtana II",
+   "kind": "song",
+   "seconds": 724,
+   "file": "music/1961_Jiv_Jago_3.mp3"
+  },
+  {
+   "id": "1962",
+   "title": "Jiv Jago (Take 3)",
+   "subtitle": "Arunodaya-kirtana II",
+   "kind": "song",
+   "seconds": 909,
+   "file": "music/1962_Jiv_Jago_4.mp3"
+  },
+  {
+   "id": "1926",
+   "title": "Kiba Jaya Jaya (Take 1)",
+   "subtitle": "Sri Gaura Arati",
+   "kind": "song",
+   "seconds": 994,
+   "file": "music/1926_Gaura_Arati_1.mp3"
+  },
+  {
+   "id": "1927",
+   "title": "Kiba Jaya Jaya (Take 2)",
+   "subtitle": "Sri Gaura Arati",
+   "kind": "song",
+   "seconds": 935,
+   "file": "music/1927_Gaura_Arati_2.mp3"
+  },
+  {
+   "id": "1928",
+   "title": "Kiba Jaya Jaya (Take 3)",
+   "subtitle": "Sri Gaura Arati",
+   "kind": "song",
+   "seconds": 520,
+   "file": "music/1928_Gaura_Arati_3.mp3"
+  },
+  {
+   "id": "1963",
+   "title": "Manasa Deha Geha",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1182,
+   "file": "music/1963_Manasa_Deha_Geha.mp3"
+  },
+  {
+   "id": "1964",
+   "title": "Manasa Deha Geha — Purport",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 285,
+   "file": "music/1964_Manasa_Deha_Geha_-_Purport.mp3"
+  },
+  {
+   "id": "1972",
+   "title": "Nitai Pada Kamala (Take 1)",
+   "subtitle": "Nityananda Nistha",
+   "kind": "song",
+   "seconds": 982,
+   "file": "music/1972_Nitai_Pada_Kamala_1.mp3"
+  },
+  {
+   "id": "1974",
+   "title": "Nitai Pada Kamala (Take 2)",
+   "subtitle": "Nityananda Nistha",
+   "kind": "song",
+   "seconds": 865,
+   "file": "music/1974_Nitai_Pada_Kamala_2.mp3"
+  },
+  {
+   "id": "1973",
+   "title": "Nitai Pada Kamala — Purport",
+   "subtitle": "Nityananda Nistha",
+   "kind": "purport",
+   "seconds": 550,
+   "file": "music/1973_Nitai_Pada_Kamala_1_-_Purport.mp3"
+  },
+  {
+   "id": "1977",
+   "title": "Parama Koruna (Take 1)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 794,
+   "file": "music/1977_Parama_Karuna_1.mp3"
+  },
+  {
+   "id": "1979",
+   "title": "Parama Koruna (Take 2)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 350,
+   "file": "music/1979_Parama_Karuna_2.mp3"
+  },
+  {
+   "id": "1980",
+   "title": "Parama Koruna (Take 3)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 837,
+   "file": "music/1980_Parama_Karuna_3.mp3"
+  },
+  {
+   "id": "1982",
+   "title": "Parama Koruna (Take 4)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 638,
+   "file": "music/1982_Parama_Karuna_4.mp3"
+  },
+  {
+   "id": "1983",
+   "title": "Parama Koruna (Take 5)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 547,
+   "file": "music/1983_Parama_Karuna_5.mp3"
+  },
+  {
+   "id": "1984",
+   "title": "Parama Koruna (Take 6)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 854,
+   "file": "music/1984_Parama_Karuna_6.mp3"
+  },
+  {
+   "id": "1985",
+   "title": "Parama Koruna (Take 7)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "song",
+   "seconds": 804,
+   "file": "music/1985_Parama_Karuna_7.mp3"
+  },
+  {
+   "id": "1978",
+   "title": "Parama Koruna — Purport (Take 1)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "purport",
+   "seconds": 394,
+   "file": "music/1978_Parama_Karuna_1_-_Purport.mp3"
+  },
+  {
+   "id": "1981",
+   "title": "Parama Koruna — Purport (Take 2)",
+   "subtitle": "Sri Sri Gaura Nityananda Daya",
+   "kind": "purport",
+   "seconds": 918,
+   "file": "music/1981_Parama_Karuna_3_-_Purport.mp3"
+  },
+  {
+   "id": "1995",
+   "title": "Prayers of King Kulasekhara (Take 1)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 57,
+   "file": "music/1995_Prayers_of_King_Kulashekhara_1.mp3"
+  },
+  {
+   "id": "1997",
+   "title": "Prayers of King Kulasekhara (Take 2)",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 55,
+   "file": "music/1997_Prayers_of_King_Kulashekhara_2.mp3"
+  },
+  {
+   "id": "1996",
+   "title": "Prayers of King Kulasekhara — Purport",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 170,
+   "file": "music/1996_Prayers_of_King_Kulashekhara_1_-_Purport.mp3"
+  },
+  {
+   "id": "2053",
+   "title": "Prayers to the Six Goswamis (Take 1)",
+   "subtitle": "Sri Sad-gosvamy-astaka",
+   "kind": "song",
+   "seconds": 1072,
+   "file": "music/2053_Sri_Sri_Sad_Gosvami_Astaka_1.mp3"
+  },
+  {
+   "id": "2054",
+   "title": "Prayers to the Six Goswamis (Take 2)",
+   "subtitle": "Sri Sad-gosvamy-astaka",
+   "kind": "song",
+   "seconds": 792,
+   "file": "music/2054_Sri_Sri_Sad_Gosvami_Astaka_2.mp3"
+  },
+  {
+   "id": "2055",
+   "title": "Prayers to the Six Goswamis (Take 3)",
+   "subtitle": "Sri Sad-gosvamy-astaka",
+   "kind": "song",
+   "seconds": 414,
+   "file": "music/2055_Sri_Sri_Sad_Gosvami_Astaka_3.mp3"
+  },
+  {
+   "id": "2056",
+   "title": "Prayers to the Six Goswamis (Take 4)",
+   "subtitle": "Sri Sad-gosvamy-astaka",
+   "kind": "song",
+   "seconds": 192,
+   "file": "music/2056_Sri_Sri_Sad_Gosvami_Astaka_4.mp3"
+  },
+  {
+   "id": "2041",
+   "title": "Samsara Davanala (Take 1)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 627,
+   "file": "music/2041_Sri_Sri_Gurvastaka_1.mp3"
+  },
+  {
+   "id": "2050",
+   "title": "Samsara Davanala (Take 10)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 1408,
+   "file": "music/2050_Sri_Sri_Gurvastaka_10.mp3"
+  },
+  {
+   "id": "2052",
+   "title": "Samsara Davanala (Take 11)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 1506,
+   "file": "music/2052_Sri_Sri_Gurvastaka_12.mp3"
+  },
+  {
+   "id": "2042",
+   "title": "Samsara Davanala (Take 2)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 202,
+   "file": "music/2042_Sri_Sri_Gurvastaka_2.mp3"
+  },
+  {
+   "id": "2043",
+   "title": "Samsara Davanala (Take 3)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 1379,
+   "file": "music/2043_Sri_Sri_Gurvastaka_3.mp3"
+  },
+  {
+   "id": "2044",
+   "title": "Samsara Davanala (Take 4)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 410,
+   "file": "music/2044_Sri_Sri_Gurvastaka_4.mp3"
+  },
+  {
+   "id": "2045",
+   "title": "Samsara Davanala (Take 5)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 1294,
+   "file": "music/2045_Sri_Sri_Gurvastaka_5.mp3"
+  },
+  {
+   "id": "2046",
+   "title": "Samsara Davanala (Take 6)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 1087,
+   "file": "music/2046_Sri_Sri_Gurvastaka_6.mp3"
+  },
+  {
+   "id": "2047",
+   "title": "Samsara Davanala (Take 7)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 578,
+   "file": "music/2047_Sri_Sri_Gurvastaka_7.mp3"
+  },
+  {
+   "id": "2048",
+   "title": "Samsara Davanala (Take 8)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 1029,
+   "file": "music/2048_Sri_Sri_Gurvastaka_8.mp3"
+  },
+  {
+   "id": "2049",
+   "title": "Samsara Davanala (Take 9)",
+   "subtitle": "Sri Sri Gurv-astakam",
+   "kind": "song",
+   "seconds": 395,
+   "file": "music/2049_Sri_Sri_Gurvastaka_9.mp3"
+  },
+  {
+   "id": "2004",
+   "title": "Sri Krsna Caitanya Prabhu (Take 1)",
+   "subtitle": "Savarana-Sri-Gaura-pada-padme",
+   "kind": "song",
+   "seconds": 426,
+   "file": "music/2004_Savarana_Sri_Gaura_Padapadme_1.mp3"
+  },
+  {
+   "id": "2005",
+   "title": "Sri Krsna Caitanya Prabhu (Take 2)",
+   "subtitle": "Savarana-Sri-Gaura-pada-padme",
+   "kind": "song",
+   "seconds": 696,
+   "file": "music/2005_Savarana_Sri_Gaura_Padapadme_2.mp3"
+  },
+  {
+   "id": "1965",
+   "title": "Vande 'Ham",
+   "subtitle": "Mangalacarana",
+   "kind": "song",
+   "seconds": 668,
+   "file": "music/1965_Mangalacarana.mp3"
+  },
+  {
+   "id": "1894",
+   "title": "Vande'ham",
+   "subtitle": "Hare Krsna Kirtana",
+   "kind": "song",
+   "seconds": 640,
+   "file": "music/1894_Vande_ham_Hare_Krsna.mp3"
+  },
+  {
+   "id": "2068",
+   "title": "Vibhavari Sesa",
+   "subtitle": null,
+   "kind": "song",
+   "seconds": 1109,
+   "file": "music/2068_Vibhavari_Sesa_1.mp3"
+  },
+  {
+   "id": "2069",
+   "title": "Vibhavari Sesa — Purport (Take 1)",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 976,
+   "file": "music/2069_Vibhavari_Sesa_1_-_Purport.mp3"
+  },
+  {
+   "id": "2071",
+   "title": "Vibhavari Sesa — Purport (Take 2)",
+   "subtitle": null,
+   "kind": "purport",
+   "seconds": 994,
+   "file": "music/2071_Vibhavari_Sesa_2_-_Purport.mp3"
+  },
+  {
+   "id": "2040",
+   "title": "Yasomati Nandana",
+   "subtitle": "Sri Nama-kirtana",
+   "kind": "song",
+   "seconds": 701,
+   "file": "music/2040_Sri_Namakirtana.mp3"
+  }
+ ]
+}
