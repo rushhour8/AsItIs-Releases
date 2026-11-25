@@ -41,7 +41,11 @@ on:
         type: boolean
         default: true
       publish_library:
-        description: "Put the library's files in library/ here, removing files no longer listed (and copy them to Cloudflare)"
+        description: "Put the library's new files in library/ here and copy them to Cloudflare (the earlier files are kept)"
+        type: boolean
+        default: false
+      remove_old_library_files:
+        description: "Also remove library/'s files this build no longer lists (only once no published app needs them)"
         type: boolean
         default: false
       release_tag:
@@ -290,23 +294,32 @@ jobs:
           compression-level: 0
           retention-days: 14
 
-      # The new files are added and the files this build does not list are removed (an earlier key's:
-      # owner's decision, 13 Nov 2026, the earlier APKs are withdrawn); then Sync to Cloudflare makes
-      # library.asitis.cc the same as library/ (copies what differs, removes what library/ has not).
+      # The new files are added; the earlier ones are kept, since an app already published downloads
+      # the very files its own list names (1.0 does: owner's request, 25 Nov 2026), and removed only
+      # when asked (remove_old_library_files). Then Sync to Cloudflare makes library.asitis.cc the same
+      # as library/ (copies what differs, removes what library/ has not).
       - name: Publish the library in library/
-        if: inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true' || steps.library.outputs.stale != '0')
+        if: inputs.publish_library && (steps.library.outputs.missing != '0' || steps.library.outputs.changed == 'true' || (inputs.remove_old_library_files && steps.library.outputs.stale != '0'))
         working-directory: releases
         env:
           GH_TOKEN: ${{ github.token }}
           SRC_SHA: ${{ steps.version.outputs.sha }}
+          REMOVE_OLD: ${{ inputs.remove_old_library_files }}
         run: |
           set -euo pipefail
           cp "$GITHUB_WORKSPACE"/library-new/library/* library/
           LIB="$GITHUB_WORKSPACE/src/app/build/asitis/library/release"
-          for f in library/*.sealed; do
-            [ -e "$f" ] || continue
-            [ -f "$LIB/$(basename "$f")" ] || { git rm -q "$f"; echo "removed: $(basename "$f")"; }
-          done
+          if [ "$REMOVE_OLD" = "true" ]; then
+            for f in library/*.sealed; do
+              [ -e "$f" ] || continue
+              [ -f "$LIB/$(basename "$f")" ] || { git rm -q "$f"; echo "removed: $(basename "$f")"; }
+            done
+          else
+            for f in library/*.sealed; do
+              [ -e "$f" ] || continue
+              [ -f "$LIB/$(basename "$f")" ] || echo "kept for earlier apps: $(basename "$f")"
+            done
+          fi
           # every file listed is here and is the build's
           for f in "$LIB"/*.sealed; do cmp -s "$f" "library/$(basename "$f")" || { echo "::error::$(basename "$f") is not in library/ as built"; exit 1; }; done
           git config user.name "github-actions[bot]"
