@@ -18,7 +18,7 @@
 
 **🎵 Music: Śrīla Prabhupāda singing**
 - 143 recordings of Śrīla Prabhupāda's songs and their purports, listed A–Z, with a search at the top.
-- A full-screen player with a wavy seek bar. Swipe it down into a mini player and up again in one smooth movement.
+- A full-screen player with a wavy seek bar; its top-left button shrinks it into the mini player, and a tap or swipe up on the mini player opens it again.
 - Favorites and your own playlists, with drag-to-reorder. Shuffle, repeat, autoplay, and a sleep timer that fades out.
 - Download any song to play it with no internet. New songs appear in the list without a new app.
 

@@ -10,7 +10,7 @@ A dedicated initiative to preserve and present the original teachings of
 His Divine Grace A. C. Bhaktivedanta Swami Prabhupāda. Every text in the app is
 checked against the original scanned first editions.
 
-<a href="https://app.asitis.cc/apk/AsItIs-v1.0.apk"><img src="https://img.shields.io/badge/Download-As%20It%20Is%201.0-d9b26a?style=for-the-badge&logo=android&logoColor=white" alt="Download As It Is 1.0"></a>
+<a href="https://app.asitis.cc/apk/asitis.apk"><img src="https://img.shields.io/badge/Download-As%20It%20Is%202.0-d9b26a?style=for-the-badge&logo=android&logoColor=white" alt="Download As It Is 2.0"></a>
 &nbsp;
 <a href="https://github.com/rushhour8/AsItIs-Releases/releases/latest"><img src="https://img.shields.io/badge/All%20releases-GitHub-3e6b6b?style=for-the-badge&logo=github&logoColor=white" alt="Releases on GitHub"></a>
 
@@ -79,7 +79,7 @@ checked against the original scanned first editions.
 </td>
 <td width="50%" valign="middle" align="center">
 <h3>📥 Get the app</h3>
-<a href="https://app.asitis.cc/apk/AsItIs-v1.0.apk"><b>Download AsItIs-v1.0.apk</b></a><br>
+<a href="https://app.asitis.cc/apk/asitis.apk"><b>Download asitis.apk</b></a><br>
 <sub>or from <a href="https://github.com/rushhour8/AsItIs-Releases/releases/latest">GitHub Releases</a></sub><br><br>
 <sub>On its first start the app downloads the library once<br>(Wi-Fi recommended); after that, no internet is needed.</sub>
 </td>
