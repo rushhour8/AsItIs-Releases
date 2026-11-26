@@ -14,8 +14,8 @@
   "packageName": "cc.asitis.app",
 
   # The newest version: its number and its name.
-  "versionCode": 1,
-  "versionName": "1.0",
+  "versionCode": 2,
+  "versionName": "2.0",
 
   # What is new: shown in the update popup. Write \n for a new line.
   "notes": "What's new in 2.0:\n• Music: Śrīla Prabhupāda singing, with playlists, downloads and a sleep timer\n• A mini player and a Downloads section for lectures and songs\n• Finished talks ticked; Gītā, Bhāgavatam and Caitanya-caritāmṛta lectures by chapter and verse\n• Search inside a book or on the page, by talk code, and highlights without diacritics\n• Continue reading keeps your place; smoother reading and e-book mode",
