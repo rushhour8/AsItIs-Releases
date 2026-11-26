@@ -27,13 +27,13 @@
   # Where the new APK is downloaded from: the primary link first;
   # if it does not give the app (blocked, missing, an error), the secondary link.
   # Both must start with https://
-  "primaryLink": "https://app.asitis.cc/apk/AsItIs-v1.0.apk",
-  "secondaryLink": "https://github.com/rushhour8/AsItIs-Releases/releases/download/v1.0/AsItIs-v1.0.apk",
+  "primaryLink": "https://app.asitis.cc/apk/asitis.apk",
+  "secondaryLink": "https://github.com/rushhour8/AsItIs-Releases/releases/download/v2.0/asitis.apk",
 
   # (Recommended) the APK's SHA-256: every download is checked against it, so a
   # wrong or changed file is never installed. Leave "" to skip the check.
-  "sha256": "28fc032f7b3cb58f8e4a63222c60f3887be101f579a7e69e66845c5de692a043",
+  "sha256": "0a1e196feb2cc5a94a0b71c4946448ff5b0787c9ad60fa33a7b39aa9cc9291e1",
 
   # (Optional) the APK's size in bytes, for the progress bar.
-  "sizeBytes": 51277098
+  "sizeBytes": 51867611
 }
