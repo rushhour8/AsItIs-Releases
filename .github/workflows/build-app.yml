@@ -13,7 +13,8 @@
 #   library's files, encrypted like those already in library/, are uploaded only when asked to
 #   publish them, or when some are new.
 #
-# One APK only (owner's decision, 13 Nov 2026): "AsItIs-v<version>.apk", the library APK — every
+# One APK only (owner's decision, 13 Nov 2026): "asitis.apk" (no version in its name since 2.0: owner's
+# request, 26 Nov 2026), the library APK — every
 # processor (ARM and Intel), no book inside: on its first start the phone proves itself genuine to the
 # key server (keys.asitis.cc: hardware attestation, not rooted), receives the books' key, then
 # downloads the library once from Cloudflare (GitHub's library/ in reserve). No books-inside APK is
@@ -222,7 +223,7 @@ jobs:
           ./gradlew assembleRelease -Pasitis.apkType=library >> "$LOG" 2>&1 || { rm -f "$RUNNER_TEMP/release.jks"; echo "::error::The library build failed"; exit 1; }
           rm -f "$RUNNER_TEMP/release.jks"
           mkdir -p "$GITHUB_WORKSPACE/upload"
-          A="$GITHUB_WORKSPACE/upload/AsItIs-v${{ steps.version.outputs.name }}.apk"
+          A="$GITHUB_WORKSPACE/upload/asitis.apk"
           cp app/build/outputs/apk/release/app-release.apk "$A"
           LIB=app/build/asitis/library/release
           # (the check opens every sealed file with the build's keys: Python's cryptography package)
@@ -351,30 +352,30 @@ jobs:
           fi
           V="${{ steps.version.outputs.name }}"
           U="$GITHUB_WORKSPACE/upload"
-          W=$(( ($(stat -c %s "$U/AsItIs-v$V.apk") + 500000) / 1000000 )); B="${{ steps.library.outputs.mb }}"
+          W=$(( ($(stat -c %s "$U/asitis.apk") + 500000) / 1000000 )); B="${{ steps.library.outputs.mb }}"
           # the notes: .github/release-notes.md, its {{VERSION}}, {{APK_MB}} and {{LIBRARY_MB}} filled in
           python3 -I "$GITHUB_WORKSPACE/releases/.github/scripts/release_notes.py" "$GITHUB_WORKSPACE/releases/.github/release-notes.md" "$V" "$W" "$B" > "$RUNNER_TEMP/notes.md"
           if [ "${{ inputs.publish_release }}" != "true" ]; then
-            gh release create "$TAG" --draft --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
+            gh release create "$TAG" --draft --title "AsItIs $V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
             echo "Draft release $TAG made (publish it from Releases: Sync to Cloudflare then copies the APK to app.asitis.cc/apk/)" | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           # published at once (owner's request, 14 Nov 2026): the release, then update.json set to its
-          # APK (version, links, SHA-256, size; the notes and "mandatory" stay as the owner wrote them),
-          # then Sync to Cloudflare (a release made by this workflow does not start it by itself): the
-          # APK to app.asitis.cc/apk/, update.json and the library to Cloudflare
-          gh release create "$TAG" --latest --title "AsItIs-v$V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
-          A="$U/AsItIs-v$V.apk"
+          # APK (links, SHA-256, size; versionCode and versionName stay as the owner wrote them, who
+          # raises them by hand when phones are to be offered it: owner's request, 26 Nov 2026; the
+          # notes and "mandatory" too), then Sync to Cloudflare (a release made by this workflow does
+          # not start it by itself): the APK to app.asitis.cc/apk/, update.json and the library
+          gh release create "$TAG" --latest --title "AsItIs $V" --notes-file "$RUNNER_TEMP/notes.md" "$U"/*.apk
+          A="$U/asitis.apk"
           python3 -I "$GITHUB_WORKSPACE/releases/.github/scripts/set_update_json.py" update.json \
-            --code "${{ steps.version.outputs.code }}" --name "$V" \
-            --primary "https://app.asitis.cc/apk/AsItIs-v$V.apk" \
-            --secondary "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/AsItIs-v$V.apk" \
+            --primary "https://app.asitis.cc/apk/asitis.apk" \
+            --secondary "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/asitis.apk" \
             --sha256 "$(sha256sum "$A" | cut -d' ' -f1)" --size "$(stat -c %s "$A")"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet -- update.json; then
             git add update.json
-            git commit -q -m "update.json: $V published (its APK's SHA-256 and size)"
+            git commit -q -m "update.json: links to $V's APK (its SHA-256 and size; versionCode left for the owner)"
             for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; [ "$i" = 3 ] && exit 1; sleep $((i * 5)); done
           fi
           gh workflow run sync-to-cloudflare.yml --ref main -f release_tag="$TAG"

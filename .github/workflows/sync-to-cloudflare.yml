@@ -6,6 +6,7 @@
 #   update.json, share.json, notification.json, policy.json  ->  bucket asitis-app      (https://app.asitis.cc/)
 #   library/*.sealed, library/library.json                    ->  bucket asitis-library  (https://library.asitis.cc/)
 #   the published release's APK                               ->  bucket asitis-app, apk/ (https://app.asitis.cc/apk/)
+#     (asitis.apk, and copies under the old names in .github/apk-old-names.txt)
 #   media/ (the recordings', letters' originals' and Music lists) ->  bucket prabhupada-media (https://media.asitis.cc/)
 #
 # Runs on each push to main that changes one of them, when a release is published (its APK), and by
@@ -71,6 +72,17 @@ jobs:
           [[ "$TAG" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "::error::The release tag may only have letters, digits, '.', '_' and '-'"; exit 1; }
           mkdir -p "$RUNNER_TEMP/apk"
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --dir "$RUNNER_TEMP/apk"
+          # the same APK under the names earlier releases gave out (owner's request, 26 Nov 2026: many
+          # have the 1.0 link): each name in .github/apk-old-names.txt, a copy of asitis.apk, so an old
+          # link downloads the newest app; every other APK under apk/ is removed
+          if [ -f "$RUNNER_TEMP/apk/asitis.apk" ] && [ -f .github/apk-old-names.txt ]; then
+            while IFS= read -r n || [ -n "$n" ]; do
+              n="${n%%#*}"; n="$(echo "$n" | tr -d '[:space:]')"
+              [ -n "$n" ] || continue
+              [[ "$n" =~ ^[A-Za-z0-9._-]+\.apk$ ]] || { echo "::error::$n is not an APK's plain name"; exit 1; }
+              [ "$n" = asitis.apk ] || cp "$RUNNER_TEMP/apk/asitis.apk" "$RUNNER_TEMP/apk/$n"
+            done < .github/apk-old-names.txt
+          fi
           ls -l "$RUNNER_TEMP/apk"
 
       - name: Make Cloudflare the same as this repository

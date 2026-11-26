@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Sets update.json to a published APK, keeping its notes for the owner (the lines starting with #),
-its "notes" and its "mandatory" as they are.
+its "notes" and its "mandatory" as they are; its versionCode and versionName too unless given
+(owner's request, 26 Nov 2026: the owner raises them by hand).
 
-    set_update_json.py update.json --code 1 --name 1.0 --primary URL --secondary URL --sha256 HEX --size BYTES
+    set_update_json.py update.json [--code 2 --name 2.0] --primary URL --secondary URL --sha256 HEX --size BYTES
 
 Exit 1 (the file unchanged) when a value is not as it must be or the file would not read as the app
 reads it (the # lines left out, then JSON).
@@ -28,14 +29,16 @@ def set_value(text, key, value):
 def main(argv):
     a = argparse.ArgumentParser()
     a.add_argument("file")
-    a.add_argument("--code", type=int, required=True)
-    a.add_argument("--name", required=True)
+    a.add_argument("--code", type=int)
+    a.add_argument("--name")
     a.add_argument("--primary", required=True)
     a.add_argument("--secondary", required=True)
     a.add_argument("--sha256", required=True)
     a.add_argument("--size", type=int, required=True)
     o = a.parse_args(argv)
-    if o.code < 1 or not re.fullmatch(r"[0-9A-Za-z.\-]+", o.name):
+    if (o.code is None) != (o.name is None):
+        print("::error::give versionCode and versionName together, or neither"); return 1
+    if o.code is not None and (o.code < 1 or not re.fullmatch(r"[0-9A-Za-z.\-]+", o.name)):
         print("::error::versionCode or versionName is not as it must be"); return 1
     if not (o.primary.startswith("https://") and o.secondary.startswith("https://")):
         print("::error::the links must start with https://"); return 1
@@ -43,16 +46,18 @@ def main(argv):
         print("::error::sha256 or size is not as it must be"); return 1
     text = open(o.file, encoding="utf-8").read()
     try:
-        for k, v in (("versionCode", o.code), ("versionName", o.name), ("primaryLink", o.primary),
-                     ("secondaryLink", o.secondary), ("sha256", o.sha256), ("sizeBytes", o.size)):
+        values = [("primaryLink", o.primary), ("secondaryLink", o.secondary), ("sha256", o.sha256), ("sizeBytes", o.size)]
+        if o.code is not None:
+            values = [("versionCode", o.code), ("versionName", o.name)] + values
+        for k, v in values:
             text = set_value(text, k, v)
         d = app_view(text)
     except ValueError as e:
         print(f"::error::update.json: {e}"); return 1
-    if (d.get("versionCode"), d.get("versionName"), d.get("sha256"), d.get("sizeBytes")) != (o.code, o.name, o.sha256, o.size):
+    if any(d.get(k) != v for k, v in values):
         print("::error::update.json does not read back as set"); return 1
     open(o.file, "w", encoding="utf-8").write(text)
-    print(f"update.json: {o.name} ({o.code}), {o.size} bytes, SHA-256 {o.sha256}")
+    print(f"update.json: {o.primary}, {o.size} bytes, SHA-256 {o.sha256}" + (f"; version {o.name} ({o.code})" if o.code is not None else "; version left as it is"))
     return 0
 
 
