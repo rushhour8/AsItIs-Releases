@@ -1,1 +1,7 @@
-1977-07-09 All G.B.C., All Temple Presidents	letters/1977/770709_-_Letter_to_All_G.B.C._and_All_Temple_Presidents.jpg
+# Letters' originals (scans) added or changed on R2 after the app was made (read quietly).
+# One letter a line: its date (YYYY-MM-DD) and to whom, a TAB, then its pages in order with "|"
+# between them ("letters/<year>/<name>.jpg"). "-" alone takes a letter's original away. Two
+# letters to the same person that day: "#2" for the second. Upload the pages to prabhupada-media first.
+# Example (remove the # to use it):
+# 1973-06-20 Gunagrahi	letters/1973/730620_-_Letter_to_Gunagrahi_1.jpg | letters/1973/730620_-_Letter_to_Gunagrahi_2.jpg
+# 1977-07-09 All G.B.C., All Temple Presidents	letters/1977/770709_-_Letter_to_All_G.B.C._and_All_Temple_Presidents.jpg
